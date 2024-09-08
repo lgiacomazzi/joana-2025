@@ -2,9 +2,10 @@ import Link from "next/link";
 import { fetchCategories } from "@/lib/data";
 import { twMerge } from "tailwind-merge";
 import JoanaBrum from "@/public/joana_brum_brasil.svg";
+import MobileMenu from "./header-mobile";
 
 export default async function Header() {
-  // const categories = await fetchCategories();
+  const categories = await fetchCategories();
 
   return (
     <div
@@ -17,7 +18,7 @@ export default async function Header() {
       </Link>
 
       {/* <DesktopNavBar categories={categories} /> */}
-      {/* <MobileMenu categories={categories} /> */}
+      <MobileMenu categories={categories} />
     </div>
   );
 }
