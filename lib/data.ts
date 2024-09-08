@@ -1,5 +1,5 @@
-import { sql } from '@vercel/postgres';
-import { Art, Category } from './definitions';
+import { sql } from "@vercel/postgres";
+import { Art, Category } from "./definitions";
 
 export async function fetchArts() {
   try {
@@ -19,8 +19,8 @@ export async function fetchArts() {
     // console.log(arts);
     return arts;
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all arts.');
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all arts.");
   }
 }
 
@@ -43,7 +43,7 @@ export async function fetchCategoryArts(category: string) {
     const arts = data.rows;
     return arts;
   } catch (err) {
-    console.error('Database Error:', err);
+    console.error("Database Error:", err);
     throw new Error(`Failed to fetch all ${category} arts.`);
   }
 }
@@ -68,8 +68,8 @@ export async function fetchYearlyPaintings(year: string, category: string) {
     // await new Promise((resolve) => setTimeout(resolve, 20000)); //Delay
     return arts;
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all arts.');
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all arts.");
   }
 }
 
@@ -94,8 +94,8 @@ export async function fetchHomeArts() {
     // console.log(arts);
     return arts;
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all arts.');
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all arts.");
   }
 }
 
@@ -114,22 +114,7 @@ export async function fetchCategories() {
     // console.log(categories);
     return categories;
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch art categories.');
-  }
-}
-
-export async function fetchNavLinks() {
-  try {
-    const categories = fetchCategories();
-
-    const navLinks = [
-      { href: '/', title: 'Home' },
-      { href: '/blog', title: 'Blog' },
-    ];
-    return navLinks;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch art categories.');
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch art categories.");
   }
 }
