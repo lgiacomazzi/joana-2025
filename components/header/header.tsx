@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import JoanaBrum from "@/public/joana_brum_brasil.svg";
 
 export default async function Header() {
-  const categories = await fetchCategories();
+  // const categories = await fetchCategories();
 
   return (
     <div
