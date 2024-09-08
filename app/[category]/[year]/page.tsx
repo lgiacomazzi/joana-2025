@@ -1,6 +1,6 @@
+import ArtDisplay from "@/components/art-display/art-display";
 import { fetchYearlyPaintings } from "@/lib/data";
 import { Art } from "@/lib/definitions";
-import Image from "next/image";
 
 type YearlyCategoryPageParams = {
   year: string;
@@ -20,14 +20,7 @@ export default async function YearlyCategoryPage({
         {params.category} - {params.year}
       </p>
       {arts.map((art: Art, index: number) => (
-        <Image
-          key={index}
-          src={art.image_url}
-          alt={art.title}
-          priority={index === 0}
-          width={100}
-          height={100}
-        />
+        <ArtDisplay art={art} key={index} />
       ))}
     </div>
   );
