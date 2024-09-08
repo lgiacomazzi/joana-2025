@@ -1,7 +1,6 @@
-import { fetchArts, fetchHomeArts } from "@/lib/data";
+import { fetchArts } from "@/lib/data";
 import { Art } from "@/lib/definitions";
 import Image from "next/image";
-import { twMerge } from "tailwind-merge";
 
 export default async function Home() {
   const arts = await fetchArts();
@@ -10,6 +9,7 @@ export default async function Home() {
     <div>
       {arts.map((art: Art, index: number) => (
         <Image
+          key={index}
           src={art.image_url}
           alt={art.title}
           priority={index === 0}
