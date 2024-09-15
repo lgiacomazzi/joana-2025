@@ -1,4 +1,4 @@
-import ArtDisplay from "@/components/art-display/art-display";
+import ArtDisplay from "@/components/art-display";
 import { fetchCategoryArts } from "@/lib/data";
 import { Art } from "@/lib/definitions";
 import { categoryTranslations } from "@/lib/utils";

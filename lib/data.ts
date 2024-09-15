@@ -24,6 +24,22 @@ export async function fetchArts() {
   }
 }
 
+export async function fetchArtById(id: string) {
+  try {
+    const data = await sql<Art>`
+      SELECT * FROM arts
+      WHERE id = ${id}
+    `;
+
+    const arts = data.rows;
+    // console.log(art);
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error(`Failed to fetch art with id ${id}`);
+  }
+}
+
 export async function fetchCategoryArts(category: string) {
   try {
     const data = await sql<Art>`
