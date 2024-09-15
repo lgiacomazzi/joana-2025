@@ -19,9 +19,9 @@ function ProcessedImage({ art }: { art: Art }) {
   };
 
   return (
-    <div className="px-4">
+    <>
       {hasError && (
-        <div className="bg-zinc-900 min-h-[300px] flex items-center justify-center rounded-sm">
+        <div className="bg-zinc-900 min-h-[300px] flex items-center justify-center">
           <ExclamationCircleIcon className="h-6 w-6 text-zinc-500" />
         </div>
       )}
@@ -33,14 +33,13 @@ function ProcessedImage({ art }: { art: Art }) {
           height={400}
           onLoadingComplete={handleLoadingComplete}
           onError={handleError}
-          className="rounded-sm"
           style={{
             opacity: isLoaded ? 1 : 0,
             transition: "opacity 1s ease",
           }}
         />
       )}
-    </div>
+    </>
   );
 }
 

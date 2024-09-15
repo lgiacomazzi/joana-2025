@@ -13,7 +13,7 @@ export default async function Header() {
         "relative z-20 flex w-screen items-center justify-between p-5"
       )}
     >
-      <Link href="/">
+      <Link href="/" className="active:scale-90 transition-all">
         <JoanaBrum className="h-12 max-h-16" />
       </Link>
 

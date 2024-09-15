@@ -5,7 +5,11 @@ import { categoryTranslations } from "@/lib/utils";
 import Link from "next/link";
 import { ComponentProps, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { Bars3Icon } from "@heroicons/react/24/solid";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronRightIcon,
+} from "@heroicons/react/24/solid";
 
 export function MobileNavLink({
   className,
@@ -14,7 +18,7 @@ export function MobileNavLink({
   return (
     <Link
       className={twMerge(
-        "block p-3 text-sm uppercase text-zinc-900",
+        "block p-3 text-sm uppercase text-zinc-100",
         className
       )}
       {...props}
@@ -28,21 +32,22 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
   return (
     <div data-open={open} className="md:hidden">
       <button className="p-4" onClick={() => setOpen(true)}>
-        <Bars3Icon className="w-6 h-6" />
+        <Bars3Icon className="w-6 h-6 active:scale-90 transition-all" />
       </button>
       <div
         className={twMerge(
-          "left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-zinc-100 pb-20",
-          open === false && "hidden",
-          open === true && "fixed"
+          "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-zinc-950 pb-20 duration-500",
+          open === false && "translate-y-[100%] opacity-80 rounded-3xl",
+          open === true && "translate-y-[0%] opacity-100 rounded-none"
         )}
       >
         <div className="flex justify-end p-5">
-          <button className="p-4 text-zinc-900" onClick={() => setOpen(false)}>
-            <p>fechar</p>
+          <button className="p-4 text-zinc-100" onClick={() => setOpen(false)}>
+            <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
         <nav>
+          <MobileNavLink href="/">Home</MobileNavLink>
           {categories.map((category, index) => (
             <div key={category.name}>
               <MobileNavLink
@@ -62,7 +67,7 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
                       onClick={() => setOpen(false)}
                     >
                       {year}
-                      <p>-</p>
+                      <ChevronRightIcon className="ml-2 w-4" />
                     </MobileNavLink>
                   )
               )}

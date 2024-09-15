@@ -6,7 +6,7 @@ export default async function Home() {
   const arts = await fetchArts();
 
   return (
-    <div>
+    <div className="columns-2 gap-4 px-4">
       {arts.map((art: Art, index: number) => (
         <ArtDisplay art={art} key={index} />
       ))}
