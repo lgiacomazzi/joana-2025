@@ -62,8 +62,6 @@ export default function UploadForm() {
       if (result.success) {
         console.log("Image successfully inserted:", result.data);
         alert("Image added successfully!");
-        const router = useRouter();
-        router.push(`art/${result.data.id}`);
       } else {
         console.error("Error adding image:", result.error);
         alert("Failed to add image.");
