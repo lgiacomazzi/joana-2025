@@ -7,7 +7,7 @@ export default function ArtDisplay({ art }: { art: Art }) {
     <Link
       href={`/art/${art.id}`}
       key={art.id}
-      className="flex min-w-[40vw] shrink flex-col justify-center max-md:mb-10 md:pl-40"
+      className="flex min-w-[40vw] flex-col justify-center mb-10"
     >
       <ProcessedImage art={art} />
       <div className="p-4 text-xs md:max-w-[300px] md:px-0">

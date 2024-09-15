@@ -5,6 +5,7 @@ import { categoryTranslations } from "@/lib/utils";
 import Link from "next/link";
 import { ComponentProps, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { Bars3Icon } from "@heroicons/react/24/solid";
 
 export function MobileNavLink({
   className,
@@ -27,7 +28,7 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
   return (
     <div data-open={open} className="md:hidden">
       <button className="p-4" onClick={() => setOpen(true)}>
-        <p>menu</p>
+        <Bars3Icon className="w-6 h-6" />
       </button>
       <div
         className={twMerge(

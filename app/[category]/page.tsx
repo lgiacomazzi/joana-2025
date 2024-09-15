@@ -26,7 +26,6 @@ export default async function CategoryPage({
 
   return (
     <div>
-      <p>{params.category}</p>
       {arts.map((art: Art, index: number) => (
         <ArtDisplay art={art} key={index} />
       ))}

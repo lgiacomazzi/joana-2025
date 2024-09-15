@@ -18,29 +18,28 @@ function ProcessedImage({ art }: { art: Art }) {
     setHasError(true);
   };
 
-  if (!art.image_url || hasError) {
-    // If the src is undefined or there was an error loading the image, show an error message
-    return (
-      <div className="bg-zinc-900 min-h-[300px] flex items-center justify-center">
-        <ExclamationCircleIcon className="h-6 w-6" />
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-zinc-900 min-h-10">
-      <Image
-        src={art.image_url}
-        alt={art.title}
-        width={400}
-        height={400}
-        onLoadingComplete={handleLoadingComplete}
-        onError={handleError}
-        style={{
-          opacity: isLoaded ? 1 : 0,
-          transition: "opacity 0.5s ease",
-        }}
-      />
+    <div className="px-4">
+      {hasError && (
+        <div className="bg-zinc-900 min-h-[300px] flex items-center justify-center rounded-sm">
+          <ExclamationCircleIcon className="h-6 w-6 text-zinc-500" />
+        </div>
+      )}
+      {!hasError && (
+        <Image
+          src={art.image_url}
+          alt={art.title}
+          width={400}
+          height={400}
+          onLoadingComplete={handleLoadingComplete}
+          onError={handleError}
+          className="rounded-sm"
+          style={{
+            opacity: isLoaded ? 1 : 0,
+            transition: "opacity 1s ease",
+          }}
+        />
+      )}
     </div>
   );
 }

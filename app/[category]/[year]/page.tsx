@@ -16,9 +16,6 @@ export default async function YearlyCategoryPage({
 
   return (
     <div>
-      <p>
-        {params.category} - {params.year}
-      </p>
       {arts.map((art: Art, index: number) => (
         <ArtDisplay art={art} key={index} />
       ))}
