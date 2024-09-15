@@ -12,6 +12,15 @@ export type Art = {
   image_url: string;
 };
 
+export type ArtData = {
+  title?: string;
+  dimensions?: string;
+  description?: string;
+  category: string;
+  year: string;
+  image_url: string;
+};
+
 export type Category = {
   name: string;
   years: string[];

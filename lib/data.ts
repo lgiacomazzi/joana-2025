@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import { Art, Category } from "./definitions";
+import { Art, ArtData, Category } from "./definitions";
 
 export async function fetchArts() {
   try {
@@ -132,5 +132,27 @@ export async function fetchCategories() {
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch art categories.");
+  }
+}
+
+export async function insertArt(artData: ArtData) {
+  const { title, dimensions, description, category, year, image_url } = artData;
+  console.log(`Sending data...`);
+  console.log(artData);
+  try {
+    const data = await sql<Art>`
+      INSERT into arts (title, dimensions, description, category, year, image_url)
+      VALUES (${title}, ${dimensions}, ${description}, ${category}, ${year}, ${image_url})
+      RETURNING *;
+    `;
+
+    console.log(data);
+
+    const arts = data.rows;
+    console.log(arts);
+    return arts;
+  } catch (err) {
+    console.error("Error inserting image data:", err);
+    throw new Error("Unable to insert image");
   }
 }

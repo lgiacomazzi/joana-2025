@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function UploadForm() {
@@ -11,7 +12,7 @@ export default function UploadForm() {
     description: "",
     category: "painting",
     year: "",
-    imageUrl: "",
+    image_url: "",
   });
 
   const extractGoogleDriveFileId = (url: string) => {
@@ -30,22 +31,47 @@ export default function UploadForm() {
       [name]: value,
     });
 
-    if (name === "imageUrl") {
+    if (name === "image_url") {
       // Extract the FILE_ID from the Google Drive link
       const fileId = extractGoogleDriveFileId(value);
+      const newImageUrl = `https://drive.google.com/uc?id=${fileId}`;
       console.log(fileId);
       if (fileId) {
-        setImagePreviewUrl(`https://drive.google.com/uc?id=${fileId}`);
+        setImagePreviewUrl(newImageUrl);
+        setFormData({ ...formData, image_url: newImageUrl });
       } else {
         setImagePreviewUrl("");
       }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here, you can handle the form submission, for example, by sending formData to an API or saving it locally.
-    console.log(formData);
+
+    try {
+      const response = await fetch("/api/add-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData), // Send form data to the API
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log("Image successfully inserted:", result.data);
+        alert("Image added successfully!");
+        const router = useRouter();
+        router.push(`art/${result.data.id}`);
+      } else {
+        console.error("Error adding image:", result.error);
+        alert("Failed to add image.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to add image. Please try again.");
+    }
   };
 
   return (
@@ -127,13 +153,13 @@ export default function UploadForm() {
 
         {/* Image URL */}
         <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="imageUrl">Image URL (Google Drive)</label>
+          <label htmlFor="image_url">Image URL (Google Drive)</label>
           <input
             type="url"
-            id="imageUrl"
-            name="imageUrl"
+            id="image_url"
+            name="image_url"
             className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
-            value={formData.imageUrl}
+            value={formData.image_url}
             onChange={handleChange}
             required
           />
