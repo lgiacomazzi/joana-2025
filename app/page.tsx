@@ -1,5 +1,4 @@
 import ArtDisplay from "@/components/art-display";
-import Image from "next/image";
 import { fetchArts, fetchHomeArts } from "@/lib/data";
 import { Art } from "@/lib/definitions";
 import { Carousel } from "@/components/carousel";

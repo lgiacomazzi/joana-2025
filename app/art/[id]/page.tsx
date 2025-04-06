@@ -1,6 +1,4 @@
-import ArtDisplay from "@/components/art-display";
 import { fetchArtById } from "@/lib/data";
-import { Art } from "@/lib/definitions";
 import Image from "next/image";
 
 type ArtPageParams = {

@@ -1,19 +1,10 @@
-import UploadForm from "@/components/admin/upload-form";
 import Image from "next/image";
 import { fetchArts } from "@/lib/data";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
-import {
-  TrashIcon,
-  PencilIcon,
-  EllipsisHorizontalIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 
-export function TableHead({
-  children,
-  className,
-  ...props
-}: ComponentProps<"th">) {
+export function TableHead({ children, className }: ComponentProps<"th">) {
   return (
     <th
       className={twMerge(
@@ -26,11 +17,7 @@ export function TableHead({
   );
 }
 
-export function TableCell({
-  children,
-  className,
-  ...props
-}: ComponentProps<"td">) {
+export function TableCell({ children, className }: ComponentProps<"td">) {
   return (
     <td
       className={twMerge(
