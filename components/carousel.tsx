@@ -1,0 +1,49 @@
+"use client";
+
+import { Art } from "@/lib/definitions";
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
+
+export function Carousel({ arts }: { arts: Art[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrevious = () => {
+    const isFirstItem = currentIndex === 0;
+    const newIndex = isFirstItem ? arts.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+  };
+
+  const goToNext = () => {
+    const isLastItem = currentIndex === arts.length - 1;
+    const newIndex = isLastItem ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      goToNext();
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [currentIndex]);
+
+  return (
+    <div className="relative h-[80vh] overflow-hidden mb-4">
+      {arts.map((art: Art, index: number) => (
+        <Link key={art.id} href={`/art/${art.id}`}>
+          <Image
+            src={art.image_url}
+            alt={art.title}
+            priority={index === 0}
+            fill
+            className={twMerge(
+              "h-full w-full object-cover object-center opacity-0 transition focus:scale-125",
+              index === currentIndex && "scale-105 opacity-100"
+            )}
+          />
+        </Link>
+      ))}
+    </div>
+  );
+}

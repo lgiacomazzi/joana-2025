@@ -10,12 +10,14 @@ export default function ArtDisplay({ art }: { art: Art }) {
       className="flex min-w-[40vw] flex-col justify-center mb-10 active:scale-90 transition-all break-inside-avoid"
     >
       <ProcessedImage art={art} />
-      <div className="p-4 text-xs md:max-w-[300px] md:px-0">
-        <p className="font-bold uppercase text-zinc-200">{art.title}</p>
-        <p className="text-zinc-400">
-          {art.description}
-          {art.dimensions && ` [${art.dimensions}]`}
-          {art.year && ` - ${art.year}`}
+      <div className="p-2 text-xs md:max-w-[300px] md:px-0">
+        <p className="font-bold uppercase text-[--foreground-primary]">
+          {art.title}
+        </p>
+        <p className="text-[--foreground-secondary]">
+          {/* {art.description} */}
+          {/* {art.dimensions && ` [${art.dimensions}]`} */}
+          {art.year && `[${art.year}]`}
         </p>
       </div>
     </Link>

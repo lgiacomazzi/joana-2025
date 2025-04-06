@@ -2,7 +2,7 @@ const { db } = require('@vercel/postgres');
 
 const {
   arts
-} = require('../lib/data-arts');
+} = require('../lib/data-arts02.js');
 
 const bcrypt = require('bcrypt');
 
@@ -29,8 +29,8 @@ async function seedArts(client) {
     const insertedArts = await Promise.all(
       arts.map(
         (art) => client.sql`
-        INSERT INTO arts (id, image_url, title, dimensions, description, category, year)
-        VALUES (${art.id}, ${art.image_url}, ${art.title}, ${art.dimensions},  ${art.description},  ${art.category}, ${art.year})
+        INSERT INTO arts (image_url, title, dimensions, description, category, year)
+        VALUES (${art.image_url}, ${art.title}, ${art.dimensions},  ${art.description},  ${art.category}, ${art.year})
         ON CONFLICT (id) DO UPDATE SET
         image_url = EXCLUDED.image_url,
         title = EXCLUDED.title,
