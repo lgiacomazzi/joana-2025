@@ -21,7 +21,7 @@ function ProcessedImage({ art }: { art: Art }) {
   return (
     <>
       {hasError && (
-        <div className="bg-zinc-900 min-h-[300px] flex items-center justify-center">
+        <div className="bg-zinc-900 min-h-[200px] flex items-center justify-center">
           <ExclamationCircleIcon className="h-6 w-6 text-zinc-500" />
         </div>
       )}
@@ -31,7 +31,7 @@ function ProcessedImage({ art }: { art: Art }) {
           alt={art.title}
           width={400}
           height={400}
-          onLoadingComplete={handleLoadingComplete}
+          onLoad={handleLoadingComplete}
           onError={handleError}
           style={{
             opacity: isLoaded ? 1 : 0,

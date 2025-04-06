@@ -34,6 +34,13 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
       <button className="p-4" onClick={() => setOpen(true)}>
         <Bars3Icon className="w-6 h-6 active:scale-90 transition-all" />
       </button>
+      {/* <div
+        className={twMerge(
+          "fixed left-0 top-0 h-full w-full bg-zinc-950 opacity-60",
+          open === false && "hidden",
+          open === true && ""
+        )}
+      /> */}
       <div
         className={twMerge(
           "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-zinc-950 pb-20 duration-500",

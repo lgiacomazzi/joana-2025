@@ -13,6 +13,7 @@ export async function fetchArts() {
         year,
         image_url
       FROM arts
+      ORDER BY year DESC
     `;
 
     const arts = data.rows;
