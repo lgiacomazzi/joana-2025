@@ -18,6 +18,7 @@ export default async function Admin() {
           <thead>
             <tr>
               <TableHead>Imagem</TableHead>
+              <TableHead>ID</TableHead>
               <TableHead className="text-left">Descrição</TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead>Ano</TableHead>
@@ -41,6 +42,7 @@ export default async function Admin() {
                     />
                   </div>
                 </TableCell>
+                <TableCell>{art.id}</TableCell>
                 <TableCell>
                   <p className="text-[--foreground-default] font-bold uppercase">
                     {art.title}

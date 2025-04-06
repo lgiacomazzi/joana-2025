@@ -24,12 +24,12 @@ export function Carousel({ arts }: { arts: Art[] }) {
   useEffect(() => {
     const timer = setInterval(() => {
       goToNext();
-    }, 4000);
+    }, 2000);
     return () => clearInterval(timer);
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="relative h-[80vh] overflow-hidden mb-4">
+    <div className="relative h-[70vh] overflow-hidden mb-4 p-4">
       {arts.map((art: Art, index: number) => (
         <Link key={art.id} href={`/art/${art.id}`}>
           <Image
@@ -38,7 +38,7 @@ export function Carousel({ arts }: { arts: Art[] }) {
             priority={index === 0}
             fill
             className={twMerge(
-              "h-full w-full object-cover object-center opacity-0 transition focus:scale-125",
+              "object-contain absolute inset-0 mx-auto opacity-0 transition focus:scale-125",
               index === currentIndex && "scale-105 opacity-100"
             )}
           />

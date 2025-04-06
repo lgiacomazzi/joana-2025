@@ -100,7 +100,7 @@ export async function fetchHomeArts() {
         year,
         image_url
       FROM arts
-      WHERE image_url NOT LIKE '/arts/'
+      WHERE in_carousel = TRUE
       ORDER BY year DESC
       LIMIT 10
     `;
@@ -110,7 +110,7 @@ export async function fetchHomeArts() {
     return arts;
   } catch (err) {
     console.error("Database Error:", err);
-    throw new Error("Failed to fetch all arts.");
+    throw new Error("Failed to fetch Carousel arts.");
   }
 }
 
