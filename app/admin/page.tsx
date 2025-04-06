@@ -1,34 +1,7 @@
 import Image from "next/image";
 import { fetchArts } from "@/lib/data";
-import { ComponentProps } from "react";
-import { twMerge } from "tailwind-merge";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-
-export function TableHead({ children, className }: ComponentProps<"th">) {
-  return (
-    <th
-      className={twMerge(
-        "p-2 border border-[--border-color-default] uppercase",
-        className
-      )}
-    >
-      {children}
-    </th>
-  );
-}
-
-export function TableCell({ children, className }: ComponentProps<"td">) {
-  return (
-    <td
-      className={twMerge(
-        "p-2 border border-[--border-color-default]",
-        className
-      )}
-    >
-      {children}
-    </td>
-  );
-}
+import { TableCell, TableHead } from "@/components/admin/admin-table";
 
 export default async function Admin() {
   const arts = await fetchArts();
