@@ -13,7 +13,52 @@ export async function fetchArts() {
         year,
         image_url
       FROM arts
+      ORDER BY RANDOM()
     `;
+
+    const arts = data.rows;
+    // console.log(arts);
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all arts.");
+  }
+}
+
+export async function fetchBugs(
+  search?: string,
+  category?: string,
+  year?: string
+) {
+  const whereClauses: string[] = [];
+  const values: string[] = [];
+
+  if (search) {
+    values.push(`%${search}%`);
+    whereClauses.push(`title ILIKE $${values.length}`);
+  }
+
+  if (category) {
+    values.push(category);
+    whereClauses.push(`category = $${values.length}`);
+  }
+
+  if (year) {
+    values.push(year);
+    whereClauses.push(`year = $${values.length}`);
+  }
+
+  const whereSQL =
+    whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+
+  try {
+    const query = `
+    SELECT * FROM arts
+    ${whereSQL}
+    ORDER BY year DESC
+  `;
+
+    const data = await sql.query(query, values);
 
     const arts = data.rows;
     // console.log(arts);
@@ -131,5 +176,32 @@ export async function fetchCategories() {
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch art categories.");
+  }
+}
+
+export async function fetchYears() {
+  try {
+    const data = await sql`
+      SELECT year FROM arts
+      GROUP BY year
+      ORDER BY year DESC
+    `;
+
+    const years = data.rows;
+    // console.log(years);
+    return years;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch art categories.");
+  }
+}
+
+export async function deleteArtById(id: string) {
+  try {
+    await sql`DELETE FROM arts WHERE id = ${id}`;
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao deletar arte:", error);
+    return { success: false, error };
   }
 }
