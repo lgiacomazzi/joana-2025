@@ -31,7 +31,7 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
 
   return (
     <div data-open={open} className="md:hidden">
-      <button className="p-4" onClick={() => setOpen(true)}>
+      <button className="p-3" onClick={() => setOpen(true)}>
         <Bars3Icon className="w-6 h-6 active:scale-90 transition-all" />
       </button>
       <div
@@ -41,8 +41,8 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
           open === true && "translate-y-[0%] opacity-100 rounded-none"
         )}
       >
-        <div className="flex justify-end p-5">
-          <button className="p-4 text-zinc-100" onClick={() => setOpen(false)}>
+        <div className="flex justify-end p-4">
+          <button className="p-3 text-zinc-100" onClick={() => setOpen(false)}>
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>

@@ -29,11 +29,12 @@ export async function fetchArtById(id: string) {
     const data = await sql<Art>`
       SELECT * FROM arts
       WHERE id = ${id}
+      LIMIT 1
     `;
 
-    const arts = data.rows;
-    // console.log(art);
-    return arts;
+    const art = data.rows[0];
+    console.log(art);
+    return art;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error(`Failed to fetch art with id ${id}`);
@@ -95,13 +96,11 @@ export async function fetchHomeArts() {
       SELECT
         id,
         title,
-        description,
-        dimensions,
         category,
         year,
         image_url
       FROM arts
-      WHERE image_url NOT LIKE '/arts/'
+      WHERE in_carousel = TRUE
       ORDER BY year DESC
       LIMIT 10
     `;
@@ -111,7 +110,7 @@ export async function fetchHomeArts() {
     return arts;
   } catch (err) {
     console.error("Database Error:", err);
-    throw new Error("Failed to fetch all arts.");
+    throw new Error("Failed to fetch Carousel arts.");
   }
 }
 
