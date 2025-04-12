@@ -10,6 +10,8 @@ export type Art = {
   category: string;
   year: string;
   image_url: string;
+  in_carousel: boolean;
+  is_visible: boolean;
 };
 
 export type Category = {
