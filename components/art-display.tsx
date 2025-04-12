@@ -7,6 +7,7 @@ export default function ArtDisplay({ art }: { art: Art }) {
     <Link
       href={`/art/${art.id}`}
       key={art.id}
+      prefetch={false}
       className="flex min-w-[40vw] flex-col justify-center mb-10 active:scale-90 transition-all break-inside-avoid"
     >
       <ProcessedImage art={art} />

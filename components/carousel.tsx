@@ -29,7 +29,7 @@ export function Carousel({ arts }: { arts: Art[] }) {
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="relative h-[70vh] overflow-hidden mb-4 p-4">
+    <div className="relative h-[70vh] overflow-hidden m-4">
       {arts.map((art: Art, index: number) => (
         <Link key={art.id} href={`/art/${art.id}`}>
           <Image

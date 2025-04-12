@@ -18,7 +18,7 @@ export default async function Admin({
 
   return (
     <>
-      <div className="flex w-full justify-between p-4 gap-2">
+      <div className="flex w-full justify-between p-4 gap-2 pt-[64px]">
         <div className="flex gap-2">
           <Search />
           <FilterSelect

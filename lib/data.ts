@@ -13,6 +13,7 @@ export async function fetchArts() {
         year,
         image_url
       FROM arts
+      WHERE is_visible = TRUE
       ORDER BY RANDOM()
     `;
 
@@ -55,7 +56,7 @@ export async function fetchBugs(
     const query = `
     SELECT * FROM arts
     ${whereSQL}
-    ORDER BY year DESC
+    ORDER BY id
   `;
 
     const data = await sql.query(query, values);
@@ -196,12 +197,32 @@ export async function fetchYears() {
   }
 }
 
+export async function setArtVisibilityById(id: string, visible: boolean) {
+  try {
+    await sql`UPDATE arts SET is_visible = ${visible} WHERE id = ${id}`;
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar visibilidade da arte:" + id, error);
+    return { success: false, error };
+  }
+}
+
+export async function setArtInCarouselById(id: string, visible: boolean) {
+  try {
+    await sql`UPDATE arts SET in_carousel = ${visible} WHERE id = ${id}`;
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar a arte:" + id, error);
+    return { success: false, error };
+  }
+}
+
 export async function deleteArtById(id: string) {
   try {
     await sql`DELETE FROM arts WHERE id = ${id}`;
     return { success: true };
   } catch (error) {
-    console.error("Erro ao deletar arte:", error);
+    console.error("Erro ao deletar arte: " + id, error);
     return { success: false, error };
   }
 }

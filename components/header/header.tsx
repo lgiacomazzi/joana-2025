@@ -3,6 +3,10 @@ import { fetchCategories } from "@/lib/data";
 import { twMerge } from "tailwind-merge";
 import JoanaBrum from "@/public/joana_brum_brasil.svg";
 import MobileMenu from "./header-mobile";
+import {
+  Cog6ToothIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
 export default async function Header() {
   const categories = await fetchCategories();
@@ -10,7 +14,7 @@ export default async function Header() {
   return (
     <div
       className={twMerge(
-        "relative z-20 flex w-screen items-center justify-between px-4 py-2"
+        "fixed z-20 flex w-full items-center justify-between px-4 py-2 transform bg-[--background-default]"
       )}
     >
       <Link href="/" className="active:scale-90 transition-all">
@@ -18,7 +22,16 @@ export default async function Header() {
       </Link>
 
       {/* <DesktopNavBar categories={categories} /> */}
-      <MobileMenu categories={categories} />
+      <div className="flex flex-row flex-end">
+        <Link href="/admin" className="p-3 hidden md:block">
+          <Cog6ToothIcon className="w-6 h-6 active:scale-90 transition-all" />
+        </Link>
+
+        <button className="p-3 md:hidden">
+          <MagnifyingGlassIcon className="w-6 h-6 active:scale-90 transition-all" />
+        </button>
+        <MobileMenu categories={categories} />
+      </div>
     </div>
   );
 }

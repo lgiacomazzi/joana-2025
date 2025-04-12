@@ -34,7 +34,8 @@ function ProcessedImage({ art }: { art: Art }) {
           onError={handleError}
           style={{
             opacity: isLoaded ? 1 : 0,
-            transition: "opacity 1s ease",
+            scale: isLoaded ? 1 : 0.95,
+            transition: ".4s",
           }}
         />
       )}
