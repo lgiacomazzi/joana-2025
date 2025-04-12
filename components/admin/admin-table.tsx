@@ -140,19 +140,11 @@ export const AdminTable = ({ arts }: { arts: Art[] }) => {
                     )}
 
                     {art.is_available ? (
-                      <button
-                        className="p-2"
-                        title="Tornar indisponível"
-                        onClick={() => SetArtVisibility(art.id, false)}
-                      >
+                      <button className="p-2" title="Tornar indisponível">
                         <CurrencyDollarIcon className="w-4 h-4 active:scale-90 transition-all text-green-500" />
                       </button>
                     ) : (
-                      <button
-                        className="p-2"
-                        title="Tornar disponível"
-                        onClick={() => SetArtVisibility(art.id, true)}
-                      >
+                      <button className="p-2" title="Tornar disponível">
                         <CurrencyDollarIconOutline className="w-4 h-4 active:scale-90 transition-all" />
                       </button>
                     )}

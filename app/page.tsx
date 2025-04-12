@@ -16,7 +16,7 @@ export default async function Home() {
         ))}
       </div> */}
 
-      <div className="px-4">
+      <div className="px-4 hidden">
         <div className="flex flex-row gap-4 overflow-x-scroll">
           {availableArts.map((art, i) => (
             <ArtDisplay key={i} art={art} />

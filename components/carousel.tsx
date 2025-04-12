@@ -5,15 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { categoryTranslations } from "@/lib/utils";
 
 export function Carousel({ arts }: { arts: Art[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // const goToPrevious = () => {
-  //   const isFirstItem = currentIndex === 0;
-  //   const newIndex = isFirstItem ? arts.length - 1 : currentIndex - 1;
-  //   setCurrentIndex(newIndex);
-  // };
 
   const goToNext = useCallback(() => {
     const isLastItem = currentIndex === arts.length - 1;
@@ -29,25 +24,32 @@ export function Carousel({ arts }: { arts: Art[] }) {
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="relative h-[70vh] overflow-hidden mb-4">
+    <div className="h-[calc(90vh-64px)] md:h-[100vh]">
       {arts.map((art: Art, index: number) => (
-        <div
+        <Link
           key={art.id}
+          href={`/art/${art.id}`}
           className={twMerge(
             "opacity-0 hidden",
-            index === currentIndex && "opacity-100 block"
+            "h-full w-full",
+            "transition-all",
+            index === currentIndex && "opacity-100 flex flex-col"
           )}
         >
-          <Link href={`/art/${art.id}`}>
+          <div className="relative w-full h-full">
             <Image
               src={art.image_url}
               alt={art.title}
               priority={index === 0}
               fill
-              className="object-cover"
+              className="object-cover md:object-contain"
             />
-          </Link>
-        </div>
+          </div>
+          <div className="uppercase p-4 bg-[--background-disabled]">
+            <span className="text-[--foreground-tertiary]">{art.year}</span> /{" "}
+            <span>{categoryTranslations[art.category]}</span>
+          </div>
+        </Link>
       ))}
     </div>
   );

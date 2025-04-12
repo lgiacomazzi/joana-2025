@@ -5,10 +5,12 @@
 :root {
   --background-default: #F2F2F3;
   --background-disabled: #CAC9CF;
+  --foreground-inverse: #19181B;
   --foreground-default: #19181B;
   --foreground-secondary: #4A4950;
   --foreground-tertiary: #7B7986;
   --foreground-disabled: #B0AFB6;
+  --foreground-inverse: #F2F2F3;
   --border-color-default: #E5E4E7;
 }
 
@@ -16,10 +18,12 @@
   :root {
     --background-default: #0C0C0D;
     --background-disabled: #19181B;
+    --foreground-inverse: #F2F2F3;
     --foreground-default: #F2F2F3;
     --foreground-secondary: #CAC9CF;
     --foreground-tertiary: #96949E;
     --foreground-disabled: #63616B;
+    --foreground-inverse: #0C0C0D;
     --border-color-default: #313036;
   }
 }
@@ -30,7 +34,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-a:hover {
+td > a:hover {
 text-decoration: underline;
 }
 

@@ -122,7 +122,6 @@ export async function fetchHomeArts() {
       FROM arts
       WHERE in_carousel = TRUE AND is_visible = TRUE
       ORDER BY year DESC
-      LIMIT 10
     `;
 
     const arts = data.rows;
