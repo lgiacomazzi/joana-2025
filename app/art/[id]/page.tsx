@@ -9,7 +9,7 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
   const art = await fetchArtById(params.id);
 
   return (
-    <div>
+    <div className="pt-[64px]">
       <Image src={art.image_url} alt={art.title} width={400} height={400} />
       <div className="p-4 text-xs md:max-w-[300px] md:px-0">
         <p className="font-bold uppercase text-[--foreground-primary]">

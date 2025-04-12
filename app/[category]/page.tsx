@@ -25,7 +25,7 @@ export default async function CategoryPage({
   const arts = await fetchCategoryArts(params.category);
 
   return (
-    <div>
+    <div className="pt-[64px]">
       {arts.map((art: Art, index: number) => (
         <ArtDisplay art={art} key={index} />
       ))}

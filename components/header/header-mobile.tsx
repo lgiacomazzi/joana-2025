@@ -18,7 +18,7 @@ export function MobileNavLink({
   return (
     <Link
       className={twMerge(
-        "block p-3 text-sm uppercase text-zinc-100",
+        "block p-3 text-md uppercase text-zinc-100",
         className
       )}
       {...props}
@@ -36,9 +36,9 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
       </button>
       <div
         className={twMerge(
-          "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-zinc-950 pb-20 duration-500",
-          open === false && "translate-y-[100%] opacity-80 rounded-3xl",
-          open === true && "translate-y-[0%] opacity-100 rounded-none"
+          "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-zinc-950 pb-20 duration-200",
+          open === false && "translate-x-[100%]",
+          open === true && "translate-x-[0%]"
         )}
       >
         <div className="flex justify-end p-4">
@@ -48,6 +48,8 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
         </div>
         <nav>
           <MobileNavLink href="/">Home</MobileNavLink>
+          <MobileNavLink href="bio">Bio</MobileNavLink>
+          <MobileNavLink href="bio">Instagram</MobileNavLink>
           {categories.map((category, index) => (
             <div key={category.name}>
               <MobileNavLink
@@ -73,8 +75,6 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
               )}
             </div>
           ))}
-          <MobileNavLink href="bio">Bio</MobileNavLink>
-          <MobileNavLink href="bio">Instagram</MobileNavLink>
         </nav>
       </div>
     </div>

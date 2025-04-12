@@ -24,25 +24,30 @@ export function Carousel({ arts }: { arts: Art[] }) {
   useEffect(() => {
     const timer = setInterval(() => {
       goToNext();
-    }, 2000);
+    }, 1500);
     return () => clearInterval(timer);
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="relative h-[70vh] overflow-hidden m-4">
+    <div className="relative h-[70vh] overflow-hidden mb-4">
       {arts.map((art: Art, index: number) => (
-        <Link key={art.id} href={`/art/${art.id}`}>
-          <Image
-            src={art.image_url}
-            alt={art.title}
-            priority={index === 0}
-            fill
-            className={twMerge(
-              "object-contain absolute inset-0 mx-auto opacity-0 transition focus:scale-125",
-              index === currentIndex && "scale-105 opacity-100"
-            )}
-          />
-        </Link>
+        <div
+          key={art.id}
+          className={twMerge(
+            "opacity-0 hidden",
+            index === currentIndex && "opacity-100 block"
+          )}
+        >
+          <Link href={`/art/${art.id}`}>
+            <Image
+              src={art.image_url}
+              alt={art.title}
+              priority={index === 0}
+              fill
+              className="object-cover"
+            />
+          </Link>
+        </div>
       ))}
     </div>
   );
