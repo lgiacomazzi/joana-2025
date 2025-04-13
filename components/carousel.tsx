@@ -5,15 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { categoryTranslations } from "@/lib/utils";
 
 export function Carousel({ arts }: { arts: Art[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // const goToPrevious = () => {
-  //   const isFirstItem = currentIndex === 0;
-  //   const newIndex = isFirstItem ? arts.length - 1 : currentIndex - 1;
-  //   setCurrentIndex(newIndex);
-  // };
 
   const goToNext = useCallback(() => {
     const isLastItem = currentIndex === arts.length - 1;
@@ -24,24 +19,36 @@ export function Carousel({ arts }: { arts: Art[] }) {
   useEffect(() => {
     const timer = setInterval(() => {
       goToNext();
-    }, 2000);
+    }, 1500);
     return () => clearInterval(timer);
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="relative h-[70vh] overflow-hidden m-4">
+    <div className="h-[calc(80lvh-64px)] md:h-[100vh]">
       {arts.map((art: Art, index: number) => (
-        <Link key={art.id} href={`/art/${art.id}`}>
-          <Image
-            src={art.image_url}
-            alt={art.title}
-            priority={index === 0}
-            fill
-            className={twMerge(
-              "object-contain absolute inset-0 mx-auto opacity-0 transition focus:scale-125",
-              index === currentIndex && "scale-105 opacity-100"
-            )}
-          />
+        <Link
+          key={art.id}
+          href={`/art/${art.id}`}
+          className={twMerge(
+            "opacity-0 hidden",
+            "h-full w-full",
+            "transition-all",
+            index === currentIndex && "opacity-100 flex flex-col"
+          )}
+        >
+          <div className="relative w-full h-full">
+            <Image
+              src={art.image_url}
+              alt={art.title}
+              priority={index === 0}
+              fill
+              className="object-cover md:object-contain"
+            />
+          </div>
+          <div className="text-sm uppercase p-4 bg-[--background-disabled]">
+            <span>{categoryTranslations[art.category]}</span> /{" "}
+            <span className="text-[--foreground-tertiary]">{art.year}</span>
+          </div>
         </Link>
       ))}
     </div>

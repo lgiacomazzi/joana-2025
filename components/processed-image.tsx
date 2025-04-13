@@ -10,7 +10,9 @@ function ProcessedImage({ art }: { art: Art }) {
   const [hasError, setHasError] = useState(false);
 
   const handleLoadingComplete = () => {
+    // setTimeout(() => {
     setIsLoaded(true);
+    // }, 10000); // simulate 1.5s delay
   };
 
   const handleError = () => {
@@ -23,6 +25,9 @@ function ProcessedImage({ art }: { art: Art }) {
         <div className="bg-[--background-disabled] min-h-[200px] flex items-center justify-center">
           <ExclamationCircleIcon className="h-6 w-6 text-[--foreground-tertiary]" />
         </div>
+      )}
+      {!isLoaded && (
+        <div className="absolute w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse" />
       )}
       {!hasError && (
         <Image

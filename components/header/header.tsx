@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { fetchCategories } from "@/lib/data";
 import { twMerge } from "tailwind-merge";
-import JoanaBrum from "@/public/joana_brum_brasil.svg";
+// import JoanaBrum from "@/public/joana_brum_brasil.svg";
+import JoanaBrum from "@/public/joana-new.svg";
 import MobileMenu from "./header-mobile";
 import {
   Cog6ToothIcon,
@@ -18,7 +19,7 @@ export default async function Header() {
       )}
     >
       <Link href="/" className="active:scale-90 transition-all">
-        <JoanaBrum className="h-10 max-h-16" />
+        <JoanaBrum className="w-40" />
       </Link>
 
       {/* <DesktopNavBar categories={categories} /> */}

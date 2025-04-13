@@ -8,17 +8,20 @@ export default function ArtDisplay({ art }: { art: Art }) {
       href={`/art/${art.id}`}
       key={art.id}
       prefetch={false}
-      className="flex min-w-[40vw] flex-col justify-center mb-10 active:scale-90 transition-all break-inside-avoid"
+      className="relative flex flex-col justify-center active:scale-90 transition-all break-inside-avoid"
     >
       <ProcessedImage art={art} />
-      <div className="p-2 text-xs md:max-w-[300px] md:px-0">
-        <p className="font-bold uppercase text-[--foreground-primary]">
+      <div className="p-1 md:px-0">
+        {art.is_available && (
+          <p className=" text-xs text-green-500">Disponível</p>
+        )}
+        <p className="text-xs uppercase font-bold text-[--foreground-primary]">
           {art.title}
         </p>
-        <p className="text-[--foreground-secondary]">
+        <p className="text-xs text-[--foreground-tertiary]">
           {/* {art.description} */}
           {/* {art.dimensions && ` [${art.dimensions}]`} */}
-          {art.year && `[${art.year}]`}
+          {art.year && `${art.year}`}
         </p>
       </div>
     </Link>

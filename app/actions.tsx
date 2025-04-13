@@ -1,6 +1,21 @@
 "use server";
 
-import { setArtVisibilityById, setArtInCarouselById } from "@/lib/data";
+import {
+  setArtVisibilityById,
+  setArtInCarouselById,
+  fetchPaginatedArts,
+} from "@/lib/data";
+
+export async function GetPaginatedArts(page: number, pageSize?: number) {
+  try {
+    console.log("# Server action GetPaginatedArts");
+    const data = await fetchPaginatedArts(page, pageSize);
+    return data;
+  } catch (error) {
+    console.error("Erro buscando artes.", error);
+    return { success: false, error: "Erro buscando artes" };
+  }
+}
 
 export async function SetArtVisibility(id: string, visible: boolean) {
   try {

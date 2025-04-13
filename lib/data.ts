@@ -4,14 +4,7 @@ import { Art, Category } from "./definitions";
 export async function fetchArts() {
   try {
     const data = await sql<Art>`
-      SELECT
-        id,
-        title,
-        description,
-        dimensions,
-        category,
-        year,
-        image_url
+      SELECT *
       FROM arts
       WHERE is_visible = TRUE
       ORDER BY RANDOM()
@@ -23,6 +16,27 @@ export async function fetchArts() {
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch all arts.");
+  }
+}
+
+export async function fetchPaginatedArts(page = 1, pageSize = 10) {
+  try {
+    const offset = (page - 1) * pageSize;
+
+    const data = await sql<Art>`
+      SELECT *
+      FROM arts
+      WHERE is_visible = TRUE
+      ORDER by id
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `;
+
+    const arts = data.rows;
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch paginated arts.");
   }
 }
 
@@ -79,7 +93,6 @@ export async function fetchArtById(id: string) {
     `;
 
     const art = data.rows[0];
-    console.log(art);
     return art;
   } catch (err) {
     console.error("Database Error:", err);
@@ -87,17 +100,32 @@ export async function fetchArtById(id: string) {
   }
 }
 
+export async function fetchRelatedArtsFromId(id: string) {
+  try {
+    const data = await sql<Art>`
+    SELECT * FROM arts
+    WHERE id != ${id}
+      AND category = (
+        SELECT category FROM arts WHERE id = ${id}
+      )
+      AND year = (
+        SELECT year FROM arts WHERE id = ${id}
+      )
+    ORDER by id
+    `;
+
+    const arts = data.rows;
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error(`Failed to fetch related arts from id ${id}`);
+  }
+}
+
 export async function fetchCategoryArts(category: string) {
   try {
     const data = await sql<Art>`
-      SELECT
-        id,
-        title,
-        description,
-        dimensions,
-        category,
-        year,
-        image_url
+      SELECT *
       FROM arts
       WHERE category LIKE ${category}
       ORDER BY year DESC
@@ -114,14 +142,7 @@ export async function fetchCategoryArts(category: string) {
 export async function fetchYearlyPaintings(year: string, category: string) {
   try {
     const data = await sql<Art>`
-      SELECT
-        id,
-        title,
-        description,
-        dimensions,
-        category,
-        year,
-        image_url
+      SELECT *
       FROM arts
       WHERE year LIKE ${year} AND category LIKE ${category}
       ORDER BY title DESC
@@ -139,16 +160,10 @@ export async function fetchYearlyPaintings(year: string, category: string) {
 export async function fetchHomeArts() {
   try {
     const data = await sql<Art>`
-      SELECT
-        id,
-        title,
-        category,
-        year,
-        image_url
+      SELECT *
       FROM arts
-      WHERE in_carousel = TRUE
+      WHERE in_carousel = TRUE AND is_visible = TRUE
       ORDER BY year DESC
-      LIMIT 10
     `;
 
     const arts = data.rows;
@@ -157,6 +172,23 @@ export async function fetchHomeArts() {
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch Carousel arts.");
+  }
+}
+
+export async function fetchAvailableArts() {
+  try {
+    const data = await sql<Art>`
+      SELECT *
+      FROM arts
+      WHERE is_visible = TRUE AND is_available = TRUE
+    `;
+
+    const arts = data.rows;
+    // console.log(arts);
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch available arts.");
   }
 }
 

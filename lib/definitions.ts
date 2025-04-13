@@ -12,6 +12,7 @@ export type Art = {
   image_url: string;
   in_carousel: boolean;
   is_visible: boolean;
+  is_available: boolean;
 };
 
 export type Category = {

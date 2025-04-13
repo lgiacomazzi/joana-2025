@@ -1,9 +1,14 @@
 "use client";
 
 import { Art } from "@/lib/definitions";
-import { EyeIcon, EyeSlashIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
-import { StarIcon as StarIconOutline } from "@heroicons/react/24/outline";
+import { StarIcon, CurrencyDollarIcon } from "@heroicons/react/24/solid";
+import {
+  StarIcon as StarIconOutline,
+  CurrencyDollarIcon as CurrencyDollarIconOutline,
+  EyeIcon,
+  EyeSlashIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
@@ -44,7 +49,7 @@ export const AdminTable = ({ arts }: { arts: Art[] }) => {
         <table className="min-w-full border border-[--border-color-default] text-xs table-auto">
           <thead>
             <tr>
-              {/* <TableHead>Imagem</TableHead> */}
+              <TableHead>Preview</TableHead>
               <TableHead>ID</TableHead>
               <TableHead className="text-left">Descrição</TableHead>
               <TableHead>Categoria</TableHead>
@@ -112,7 +117,7 @@ export const AdminTable = ({ arts }: { arts: Art[] }) => {
                         title="Mostrar Imagem"
                         onClick={() => SetArtVisibility(art.id, true)}
                       >
-                        <EyeSlashIcon className="w-4 h-4 active:scale-90 transition-all text-[--foreground-disabled]" />
+                        <EyeSlashIcon className="w-4 h-4 active:scale-90 transition-all" />
                       </button>
                     )}
 
@@ -131,6 +136,16 @@ export const AdminTable = ({ arts }: { arts: Art[] }) => {
                         onClick={() => SetArtInCarousel(art.id, true)}
                       >
                         <StarIconOutline className="w-4 h-4 active:scale-90 transition-all " />
+                      </button>
+                    )}
+
+                    {art.is_available ? (
+                      <button className="p-2" title="Tornar indisponível">
+                        <CurrencyDollarIcon className="w-4 h-4 active:scale-90 transition-all text-green-500" />
+                      </button>
+                    ) : (
+                      <button className="p-2" title="Tornar disponível">
+                        <CurrencyDollarIconOutline className="w-4 h-4 active:scale-90 transition-all" />
                       </button>
                     )}
 
