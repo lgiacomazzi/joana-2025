@@ -26,7 +26,7 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
         {art.is_available ? (
           <p className="text-xs text-green-500">Disponível</p>
         ) : (
-          <p className="text-xs text-[--foreground-tertiary]">Inisponível</p>
+          <p className="text-xs text-[--foreground-tertiary]">Indisponível</p>
         )}
         <p className="font-bold uppercase text-[--foreground-primary]">
           {art.title ? art.title : "Sem título"}
@@ -37,7 +37,7 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
           {art.year && `[${art.year}]`}
         </p>
         {art.is_available ? (
-          <button className="w-full flex flex-row gap-1 items-center justify-center font-bold h-10 px-6 bg-[--background-inverse] text-[--foreground-inverse] rounded-full">
+          <button className="w-full flex flex-row gap-1 items-center justify-center font-bold h-10 px-6 bg-[--background-inverse] text-[--foreground-inverse] rounded-full active:scale-90 transition-all">
             <ShoppingBagIcon className="w-4 h-4" />
             Comprar
           </button>
