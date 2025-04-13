@@ -19,6 +19,27 @@ export async function fetchArts() {
   }
 }
 
+export async function fetchPaginatedArts(page = 1, pageSize = 10) {
+  try {
+    const offset = (page - 1) * pageSize;
+
+    const data = await sql<Art>`
+      SELECT *
+      FROM arts
+      WHERE is_visible = TRUE
+      ORDER by id
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `;
+
+    const arts = data.rows;
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch paginated arts.");
+  }
+}
+
 export async function fetchBugs(
   search?: string,
   category?: string,

@@ -24,7 +24,7 @@ export function Carousel({ arts }: { arts: Art[] }) {
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="h-[calc(90vh-64px)] md:h-[100vh]">
+    <div className="h-[calc(80lvh-64px)] md:h-[100vh]">
       {arts.map((art: Art, index: number) => (
         <Link
           key={art.id}
@@ -45,7 +45,7 @@ export function Carousel({ arts }: { arts: Art[] }) {
               className="object-cover md:object-contain"
             />
           </div>
-          <div className="uppercase p-4 bg-[--background-disabled]">
+          <div className="text-sm uppercase p-4 bg-[--background-disabled]">
             <span className="text-[--foreground-tertiary]">{art.year}</span> /{" "}
             <span>{categoryTranslations[art.category]}</span>
           </div>
