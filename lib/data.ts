@@ -93,11 +93,32 @@ export async function fetchArtById(id: string) {
     `;
 
     const art = data.rows[0];
-    console.log(art);
     return art;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error(`Failed to fetch art with id ${id}`);
+  }
+}
+
+export async function fetchRelatedArtsFromId(id: string) {
+  try {
+    const data = await sql<Art>`
+    SELECT * FROM arts
+    WHERE id != ${id}
+      AND category = (
+        SELECT category FROM arts WHERE id = ${id}
+      )
+      AND year = (
+        SELECT year FROM arts WHERE id = ${id}
+      )
+    ORDER by id
+    `;
+
+    const arts = data.rows;
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error(`Failed to fetch related arts from id ${id}`);
   }
 }
 

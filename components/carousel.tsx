@@ -46,8 +46,8 @@ export function Carousel({ arts }: { arts: Art[] }) {
             />
           </div>
           <div className="text-sm uppercase p-4 bg-[--background-disabled]">
-            <span className="text-[--foreground-tertiary]">{art.year}</span> /{" "}
-            <span>{categoryTranslations[art.category]}</span>
+            <span>{categoryTranslations[art.category]}</span> /{" "}
+            <span className="text-[--foreground-tertiary]">{art.year}</span>
           </div>
         </Link>
       ))}

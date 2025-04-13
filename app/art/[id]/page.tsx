@@ -1,4 +1,6 @@
-import { fetchArtById } from "@/lib/data";
+import Galery from "@/components/gallery/galery";
+import { fetchArtById, fetchRelatedArtsFromId } from "@/lib/data";
+import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
 type ArtPageParams = {
@@ -7,6 +9,7 @@ type ArtPageParams = {
 
 export default async function ArtPage({ params }: { params: ArtPageParams }) {
   const art = await fetchArtById(params.id);
+  const relatedArts = await fetchRelatedArtsFromId(params.id);
 
   return (
     <div className="py-[64px]">
@@ -14,27 +17,40 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
         <Image
           src={art.image_url}
           alt={art.title}
-          width={1000}
-          height={1000}
+          width={400}
+          height={400}
           className="w-full"
         />
       </div>
-      <div className="p-4 text-xs">
+      <div className="p-4 pb-12 mb-12 border-b border-[--border-color-default]">
         {art.is_available ? (
-          <p className=" text-xs text-green-500">Disponível</p>
+          <p className="text-xs text-green-500">Disponível</p>
         ) : (
-          <p className=" text-xs text-[--foreground-tertiary]">Inisponível</p>
+          <p className="text-xs text-[--foreground-tertiary]">Inisponível</p>
         )}
         <p className="font-bold uppercase text-[--foreground-primary]">
-          {art.title}
+          {art.title ? art.title : "Sem título"}
         </p>
-        <p className="text-[--foreground-secondary]">
+        <p className="text-sm text-[--foreground-tertiary] mb-4">
           {art.description}
           {art.dimensions && ` [${art.dimensions}]`}
           {art.year && `[${art.year}]`}
         </p>
+        {art.is_available ? (
+          <button className="w-full flex flex-row gap-1 items-center justify-center font-bold h-10 px-6 bg-[--background-inverse] text-[--foreground-inverse] rounded-full">
+            <ShoppingBagIcon className="w-4 h-4" />
+            Comprar
+          </button>
+        ) : (
+          <button
+            disabled
+            className="w-full flex flex-row gap-1 items-center justify-center font-bold h-10 px-6 bg-[--background-disabled] text-[--foreground-disabled] rounded-full"
+          >
+            Indisponível
+          </button>
+        )}
       </div>
-      <div>subsequent arts...</div>
+      <Galery arts={relatedArts} />
     </div>
   );
 }

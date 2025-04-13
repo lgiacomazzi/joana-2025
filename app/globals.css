@@ -5,7 +5,7 @@
 :root {
   --background-default: #F2F2F3;
   --background-disabled: #CAC9CF;
-  --foreground-inverse: #19181B;
+  --background-inverse: #19181B;
   --foreground-default: #19181B;
   --foreground-secondary: #4A4950;
   --foreground-tertiary: #7B7986;
@@ -18,7 +18,7 @@
   :root {
     --background-default: #0C0C0D;
     --background-disabled: #19181B;
-    --foreground-inverse: #F2F2F3;
+    --background-inverse: #F2F2F3;
     --foreground-default: #F2F2F3;
     --foreground-secondary: #CAC9CF;
     --foreground-tertiary: #96949E;
