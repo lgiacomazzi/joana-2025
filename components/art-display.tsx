@@ -1,7 +1,6 @@
 import { Art } from "@/lib/definitions";
 import ProcessedImage from "./processed-image";
 import Link from "next/link";
-import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 
 export default function ArtDisplay({ art }: { art: Art }) {
   return (
@@ -15,7 +14,6 @@ export default function ArtDisplay({ art }: { art: Art }) {
       <div className="p-1 md:px-0">
         {art.is_available && (
           <p className=" text-xs text-green-500">Disponível</p>
-          // <CurrencyDollarIcon className="w-3 h-3 text-green-500" />
         )}
         <p className="text-xs uppercase font-bold text-[--foreground-primary]">
           {art.title}
