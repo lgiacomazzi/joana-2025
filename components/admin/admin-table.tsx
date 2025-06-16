@@ -16,7 +16,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import {
-  DeleteArt,
   GetArts,
   SetArtForSale,
   SetArtInCarousel,
@@ -56,15 +55,7 @@ export const TableCell = ({ children, className }: ComponentProps<"td">) => {
   );
 };
 
-export const AdminTable = ({
-  search,
-  category,
-  year,
-}: {
-  search?: string;
-  category?: string;
-  year?: string;
-}) => {
+export const AdminTable = () => {
   const [data, setData] = useState<Art[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -116,8 +107,7 @@ export const AdminTable = ({
         <table className="min-w-full border border-[--border-color-default] text-xs table-auto">
           <thead>
             <tr>
-              <TableHead>Preview</TableHead>
-              <TableHead>ID</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead className="text-left">Descrição</TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead>Ano</TableHead>
@@ -129,31 +119,31 @@ export const AdminTable = ({
             {data.map((art) => (
               <tr
                 key={art.id}
-                className={twMerge(
-                  "hover:bg-[--background-disabled] h-16",
-                  !art.is_visible && "opacity-50"
-                )}
+                className={twMerge("h-16", !art.is_visible && "opacity-30")}
               >
-                <TableCell className="p-2 max-w-fit">
-                  <div className="relative w-12 h-12">
-                    {art.is_visible && (
-                      <Image
-                        className="w-full h-full object-cover object-center rounded-lg border border-[--border-color-default] overflow-hidden"
-                        src={art.image_url}
-                        width={40}
-                        height={40}
-                        alt={""}
-                      />
-                    )}
+                <TableCell>
+                  <div className="flex gap-4">
+                    <div className="relative w-8 h-8">
+                      {art.is_visible && (
+                        <Image
+                          className="w-full h-full object-cover object-center rounded-lg border border-[--border-color-default] overflow-hidden"
+                          src={art.image_url}
+                          fill={true}
+                          alt={""}
+                        />
+                      )}
+                    </div>
+                    <Link href={`/art/${art.id}`}>
+                      <p className="text-[--foreground-default] font-bold">
+                        {art.title || "{Sem título}"}
+                      </p>
+                      <span className="text-[--foreground-tertiary]">
+                        {art.id}
+                      </span>
+                    </Link>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Link href={`/art/${art.id}`}>{art.id}</Link>
-                </TableCell>
-                <TableCell>
-                  <p className="text-[--foreground-default] font-bold uppercase">
-                    {art.title}
-                  </p>
                   <p className="text-[--foreground-tertiary]">
                     {art.description}
                   </p>

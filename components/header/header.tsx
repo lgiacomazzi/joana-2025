@@ -23,8 +23,8 @@ export default async function Header() {
       </Link>
 
       {/* <DesktopNavBar categories={categories} /> */}
-      <div className="flex flex-row flex-end">
-        <Link href="/admin" className="p-3 hidden md:block">
+      <div className="flex flex-row flex-end ">
+        <Link href="/admin" className="p-3 hidden">
           <Cog6ToothIcon className="w-6 h-6 active:scale-90 transition-all" />
         </Link>
 
