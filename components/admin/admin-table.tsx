@@ -180,46 +180,46 @@ export const AdminTable = () => {
 
                     {art.in_carousel ? (
                       <button
-                        className="p-2"
+                        className="p-2 hover:scale-90 active:scale-90 transition-all"
                         title="Remover do Carousel"
                         onClick={() => handleAction("unstar", art.id)}
                       >
-                        <StarIcon className="w-4 h-4 active:scale-90 transition-all text-orange-400" />
+                        <StarIcon className="w-4 h-4 text-orange-400" />
                       </button>
                     ) : (
                       <button
-                        className="p-2"
+                        className="p-2 hover:scale-90 active:scale-90 transition-all"
                         title="Adicionar ao Carousel"
                         onClick={() => handleAction("star", art.id)}
                       >
-                        <StarIconOutline className="w-4 h-4 active:scale-90 transition-all " />
+                        <StarIconOutline className="w-4 h-4" />
                       </button>
                     )}
 
                     {art.is_available ? (
                       <button
-                        className="p-2"
+                        className="p-2 hover:scale-90 active:scale-90 transition-all"
                         title="Tornar indisponível"
                         onClick={() => handleAction("unsell", art.id)}
                       >
-                        <CurrencyDollarIcon className="w-4 h-4 active:scale-90 transition-all text-green-500" />
+                        <CurrencyDollarIcon className="w-4 h-4 text-green-500" />
                       </button>
                     ) : (
                       <button
-                        className="p-2"
+                        className="p-2 hover:scale-90 active:scale-90 transition-all"
                         title="Tornar disponível"
                         onClick={() => handleAction("sell", art.id)}
                       >
-                        <CurrencyDollarIcon className="w-4 h-4 active:scale-90 transition-all" />
+                        <CurrencyDollarIcon className="w-4 h-4" />
                       </button>
                     )}
 
                     <button
-                      className="p-2"
+                      className="p-2 hover:scale-90 active:scale-90 transition-all"
                       title="Deletar"
                       onClick={() => handleEdit()}
                     >
-                      <PencilSquareIcon className="w-4 h-4 active:scale-90 transition-all " />
+                      <PencilSquareIcon className="w-4 h-4" />
                     </button>
                   </div>
                 </TableCell>

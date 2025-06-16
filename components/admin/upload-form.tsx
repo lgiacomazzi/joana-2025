@@ -2,20 +2,22 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 export default function UploadForm() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [imageUrlError, setImageUrlError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     dimensions: "",
     description: "",
     category: "painting",
-    year: "",
+    year: new Date().getFullYear(),
     imageUrl: "",
   });
 
-  const extractGoogleDriveFileId = (url: string) => {
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  const extractGoogleDriveFileId = (url: string): string | null => {
+    const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
     return match ? match[1] : null;
   };
 
@@ -31,13 +33,17 @@ export default function UploadForm() {
     });
 
     if (name === "imageUrl") {
-      // Extract the FILE_ID from the Google Drive link
-      const fileId = extractGoogleDriveFileId(value);
-      console.log(fileId);
-      if (fileId) {
+      const isValidDriveUrl = /(?:\/d\/|id=)[\w-]{25,}/.test(value);
+      // console.log(isValidDriveUrl);
+      if (isValidDriveUrl) {
+        // Extract the FILE_ID from the Google Drive link
+        const fileId = extractGoogleDriveFileId(value);
+        // seta variavel com a URL
         setImagePreviewUrl(`https://drive.google.com/uc?id=${fileId}`);
+        setImageUrlError("");
       } else {
         setImagePreviewUrl("");
+        setImageUrlError("Insira um link válido do Google Drive.");
       }
     }
   };
@@ -49,56 +55,70 @@ export default function UploadForm() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="flex m-auto justify-center gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full text-xs p-4 border border-[--border-color-default] rounded-md max-w-[400px]"
+      >
         {/* Title */}
-        <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="title">Title</label>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="title" className="mb-2 font-bold">
+            Título da Obra
+          </label>
           <input
             type="text"
             id="title"
             name="title"
-            className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
+            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
             value={formData.title}
             onChange={handleChange}
+            placeholder="Nova Obra"
             required
           />
         </div>
 
         {/* Dimensions */}
-        <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="dimensions">Dimensions</label>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="dimensions" className="mb-2 font-bold">
+            Dimensões
+          </label>
           <input
             type="text"
             id="dimensions"
             name="dimensions"
-            className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
+            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
             value={formData.dimensions}
+            placeholder="100x100cm"
             onChange={handleChange}
             required
           />
         </div>
 
         {/* Description */}
-        <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="description">Description</label>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="description" className="mb-2 font-bold">
+            Descrição
+          </label>
           <textarea
             id="description"
             name="description"
-            className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
+            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
             value={formData.description}
             onChange={handleChange}
+            placeholder="Tinta acrílica sobre canvas"
             required
           ></textarea>
         </div>
 
         {/* Category */}
-        <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="category">Category</label>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="category" className="mb-2 font-bold">
+            Categoria
+          </label>
           <select
             id="category"
             name="category"
-            className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
+            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
             value={formData.category}
             onChange={handleChange}
             required
@@ -112,51 +132,67 @@ export default function UploadForm() {
         </div>
 
         {/* Year */}
-        <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="year">Year</label>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="year" className="mb-2 font-bold">
+            Ano
+          </label>
           <input
-            type="text"
+            type="number"
             id="year"
             name="year"
-            className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
+            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
             value={formData.year}
             onChange={handleChange}
+            placeholder="0000"
             required
           />
         </div>
 
         {/* Image URL */}
-        <div className="flex px-4 flex-col mb-4">
-          <label htmlFor="imageUrl">Image URL (Google Drive)</label>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="imageUrl" className="font-bold">
+            Image URL (Google Drive)
+          </label>
+          <p className="text-[--foreground-secondary] mb-2 ">
+            Colar o link da imagem no Google Drive.
+          </p>
           <input
             type="url"
             id="imageUrl"
             name="imageUrl"
-            className="bg-zinc-900 border-zinc-800 border-[1px] p-1 rounded-md"
+            className={twMerge(
+              "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md",
+              imageUrlError && "border-red-500"
+            )}
             value={formData.imageUrl}
+            placeholder="https://drive.google.com/file/d/..."
             onChange={handleChange}
             required
           />
+          {imageUrlError && (
+            <p className="text-red-500 mt-2">{imageUrlError}</p>
+          )}
+          <div className="relative mb-4 max-w-40 max-h-40 rounded-md">
+            {imagePreviewUrl ? (
+              <Image
+                src={imagePreviewUrl}
+                alt="Preview"
+                width={100}
+                height={100}
+                onError={() => console.log("erro")}
+              />
+            ) : (
+              <div className="w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse rounded-md" />
+            )}
+          </div>
         </div>
 
-        {/* Image Preview */}
-        {imagePreviewUrl && (
-          <div className="flex px-4 flex-col mb-4">
-            <h2>Image Preview:</h2>
-            <Image
-              src={imagePreviewUrl}
-              alt="Preview"
-              height={200}
-              width={200}
-            />
-          </div>
-        )}
-        <div className="flex px-4 flex-col mb-4">
+        <div className="flex flex-col mb-4">
           <button
             type="submit"
-            className="bg-zinc-100 text-zinc-900 p-2 rounded-md font-bold"
+            className="flex flex-row gap-2 items-center justify-center font-bold h-10 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full"
           >
-            Add Image
+            Add Art
           </button>
         </div>
       </form>

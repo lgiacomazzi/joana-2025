@@ -1,6 +1,5 @@
-import ArtDisplay from "@/components/art-display";
+import Galery from "@/components/gallery/galery";
 import { fetchCategoryArts } from "@/lib/data";
-import { Art } from "@/lib/definitions";
 import { categoryTranslations } from "@/lib/utils";
 import { Metadata, ResolvingMetadata } from "next";
 
@@ -26,9 +25,12 @@ export default async function CategoryPage({
 
   return (
     <div className="pt-[64px]">
-      {arts.map((art: Art, index: number) => (
-        <ArtDisplay art={art} key={index} />
-      ))}
+      <div className="flex gap-4 px-4 md:max-w-5xl md:m-auto my-4">
+        <h1 className="uppercase text-lg">
+          {categoryTranslations[params.category]}
+        </h1>
+      </div>
+      <Galery arts={arts} />
     </div>
   );
 }

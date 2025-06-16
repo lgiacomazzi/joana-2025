@@ -9,8 +9,10 @@ export default async function Home() {
 
   return (
     <div className="py-[64px] flex flex-col gap-10">
+      {/* Carousel de entrada */}
       <Carousel arts={homeArts} />
 
+      {/* Região para artes dispníveis */}
       <div className="px-4 hidden">
         <div className="flex flex-row gap-4 overflow-x-scroll">
           {availableArts.map((art, i) => (

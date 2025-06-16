@@ -13,16 +13,20 @@ import {
 
 export function MobileNavLink({
   className,
+  children,
   ...props
 }: ComponentProps<typeof Link>) {
   return (
     <Link
       className={twMerge(
-        "block p-3 text-md uppercase text-zinc-100",
+        "block flex p-3 text-md uppercase text-zinc-100 justify-between border-[--border-color-default] border-b",
         className
       )}
       {...props}
-    />
+    >
+      {children}
+      <ChevronRightIcon className="ml-2 w-4" />
+    </Link>
   );
 }
 
@@ -59,7 +63,7 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
               >
                 {categoryTranslations[category.name]}
               </MobileNavLink>
-              {category.years.map(
+              {/* {category.years.map(
                 (year, index) =>
                   year && (
                     <MobileNavLink
@@ -72,7 +76,7 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
                       <ChevronRightIcon className="ml-2 w-4" />
                     </MobileNavLink>
                   )
-              )}
+              )} */}
             </div>
           ))}
         </nav>
