@@ -17,8 +17,8 @@ export default async function Admin({
   const years = (await fetchYears()).map((item) => item.year);
 
   return (
-    <>
-      <div className="flex w-full justify-between p-4 gap-2 pt-[64px]">
+    <div className="pt-[64px]">
+      <div className="flex w-full justify-between p-4 gap-2">
         <div className="flex gap-2">
           <Search />
           <FilterSelect
@@ -29,12 +29,18 @@ export default async function Admin({
           <FilterSelect name="year" options={years} placeholder="Anos" />
         </div>
         <div className="flex gap-2">
-          <button className="text-xs p-3 border text-bold">Export</button>
-          <button className="text-xs p-3 border text-bold">Import</button>
-          <button className="text-xs p-3 bg-blue-500 text-bold">Add Art</button>
+          <button className="flex flex-row gap-1 items-center justify-center font-bold h-10 px-4 bg-[--background-deafult] text-xs border rounded-full">
+            Export
+          </button>
+          <button className="flex flex-row gap-1 items-center justify-center font-bold h-10 px-4 bg-[--background-deafult] text-xs border rounded-full">
+            Import
+          </button>
+          <button className="flex flex-row gap-1 items-center justify-center font-bold h-10 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full">
+            Add Art
+          </button>
         </div>
       </div>
-      <AdminTable arts={arts} />
-    </>
+      <AdminTable />
+    </div>
   );
 }

@@ -249,6 +249,16 @@ export async function setArtInCarouselById(id: string, visible: boolean) {
   }
 }
 
+export async function setArtAvailabilitylById(id: string, sellable: boolean) {
+  try {
+    await sql`UPDATE arts SET is_available = ${sellable} WHERE id = ${id}`;
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar a arte:" + id, error);
+    return { success: false, error };
+  }
+}
+
 export async function deleteArtById(id: string) {
   try {
     await sql`DELETE FROM arts WHERE id = ${id}`;

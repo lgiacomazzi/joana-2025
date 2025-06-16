@@ -4,7 +4,19 @@ import {
   setArtVisibilityById,
   setArtInCarouselById,
   fetchPaginatedArts,
+  fetchBugs,
+  setArtAvailabilitylById,
 } from "@/lib/data";
+
+export async function GetArts() {
+  try {
+    const data = await fetchBugs();
+    return data;
+  } catch (error) {
+    console.error("Erro buscando artes.", error);
+    return { success: false, error: "Erro buscando artes" };
+  }
+}
 
 export async function GetPaginatedArts(page: number, pageSize?: number) {
   try {
@@ -36,6 +48,19 @@ export async function SetArtInCarousel(id: string, visible: boolean) {
       ? console.log("Removendo arte " + id + " no carousel")
       : console.log("Adicionando arte " + id + " no carousel");
     await setArtInCarouselById(id, visible);
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao configurar arte:" + id, error);
+    return { success: false, error: "Erro ao configurar arte." };
+  }
+}
+
+export async function SetArtForSale(id: string, sellable: boolean) {
+  try {
+    sellable === false
+      ? console.log("Removendo arte " + id + " das disponíveis")
+      : console.log("Adicionando arte " + id + " nas disponíveis");
+    await setArtAvailabilitylById(id, sellable);
     return { success: true };
   } catch (error) {
     console.error("Erro ao configurar arte:" + id, error);

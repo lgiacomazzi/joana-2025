@@ -34,7 +34,7 @@ export function FilterSelect({
     <select
       value={value}
       onChange={(e) => setValue(e.target.value)}
-      className="p-3 bg-[--background-deafult] text-sm border"
+      className="flex flex-row gap-1 items-center justify-center font-bold h-10 px-4 bg-[--background-deafult] text-xs border rounded-full"
     >
       <option value="">{placeholder}</option>
       {options.map((opt) => (
