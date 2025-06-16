@@ -4,10 +4,10 @@ import { Art } from "@/lib/definitions";
 import {
   StarIcon,
   CurrencyDollarIcon,
-  PencilSquareIcon,
   EyeIcon,
   EyeSlashIcon,
   StarIcon as StarIconOutline,
+  TrashIcon,
 } from "@heroicons/react/16/solid";
 
 import { ComponentProps, useEffect, useState } from "react";
@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import {
+  DeleteArt,
   GetArts,
   SetArtForSale,
   SetArtInCarousel,
@@ -88,6 +89,12 @@ export const AdminTable = () => {
       case "unsell":
         await SetArtForSale(id, false);
         break;
+      case "delete":
+        if (confirm("Tem certeza que deseja deletar esta arte?")) {
+          await DeleteArt(id);
+          alert("Arte deletada com sucesso.");
+        }
+      // alert("Arte deletada com sucesso.");
       default:
         console.warn("Ação desconhecida:", action);
     }
@@ -95,10 +102,6 @@ export const AdminTable = () => {
     // Depois de qualquer ação, atualiza os dados:
     // alert("RefreshKey: " + refreshKey);
     setRefreshKey((prev) => prev + 1);
-  };
-
-  const handleEdit = () => {
-    alert("edit");
   };
 
   return (
@@ -133,14 +136,22 @@ export const AdminTable = () => {
                         />
                       )}
                     </div>
-                    <Link href={`/art/${art.id}`}>
-                      <p className="text-[--foreground-default] font-bold">
-                        {art.title || "{Sem título}"}
-                      </p>
-                      <span className="text-[--foreground-tertiary]">
+                    <div>
+                      <Link href={`/art/${art.id}`}>
+                        <p className="text-[--foreground-default] font-bold">
+                          {art.title || "{Sem título}"}
+                        </p>
+                      </Link>
+                      <span
+                        className="text-[--foreground-tertiary] cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(art.id);
+                          alert("ID copiado: " + art.id); // Optional feedback
+                        }}
+                      >
                         {art.id}
                       </span>
-                    </Link>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -158,8 +169,11 @@ export const AdminTable = () => {
                     {shortenUrl(art.image_url)}
                   </Link>
                 </TableCell>
+
+                {/* Action Buttons */}
                 <TableCell className="p-0">
                   <div className="flex flex-row">
+                    {/* Botão para visibilidade */}
                     {art.is_visible ? (
                       <button
                         className="p-2"
@@ -178,6 +192,7 @@ export const AdminTable = () => {
                       </button>
                     )}
 
+                    {/* Botão para Home/Carousel */}
                     {art.in_carousel ? (
                       <button
                         className="p-2 hover:scale-90 active:scale-90 transition-all"
@@ -196,6 +211,7 @@ export const AdminTable = () => {
                       </button>
                     )}
 
+                    {/* Botão para Disponibilidade */}
                     {art.is_available ? (
                       <button
                         className="p-2 hover:scale-90 active:scale-90 transition-all"
@@ -214,12 +230,13 @@ export const AdminTable = () => {
                       </button>
                     )}
 
+                    {/* Botão para Deletar */}
                     <button
                       className="p-2 hover:scale-90 active:scale-90 transition-all"
                       title="Deletar"
-                      onClick={() => handleEdit()}
+                      onClick={() => handleAction("delete", art.id)}
                     >
-                      <PencilSquareIcon className="w-4 h-4" />
+                      <TrashIcon className="w-4 h-4" />
                     </button>
                   </div>
                 </TableCell>

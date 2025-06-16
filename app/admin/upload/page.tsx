@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default async function Upload() {
   return (
-    <div className="pt-[64px]">
+    <div className="py-[64px]">
       {/* Future Breadcrumb */}
       <div className="m-4 flex gap-4 flex-col">
         <Link href="/admin">

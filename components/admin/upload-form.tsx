@@ -3,10 +3,12 @@
 import Image from "next/image";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { CreateArt } from "@/app/actions";
 
 export default function UploadForm() {
-  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
-  const [imageUrlError, setImageUrlError] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(""); // Preview URL for the Google Drive image
+  const [imageUrlError, setImageUrlError] = useState(""); // Error state for image URL
+  const [isLoading, setIsLoading] = useState(false); // Loading state from submit
   const [formData, setFormData] = useState({
     title: "",
     dimensions: "",
@@ -14,6 +16,9 @@ export default function UploadForm() {
     category: "painting",
     year: new Date().getFullYear(),
     imageUrl: "",
+    is_visible: true, // Default value
+    is_available: false, // Default value
+    in_carousel: false, // Default value
   });
 
   const extractGoogleDriveFileId = (url: string): string | null => {
@@ -27,31 +32,93 @@ export default function UploadForm() {
     >
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
 
     if (name === "imageUrl") {
-      const isValidDriveUrl = /(?:\/d\/|id=)[\w-]{25,}/.test(value);
-      // console.log(isValidDriveUrl);
+      const isValidDriveUrl = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/.test(value);
       if (isValidDriveUrl) {
         // Extract the FILE_ID from the Google Drive link
         const fileId = extractGoogleDriveFileId(value);
-        // seta variavel com a URL
-        setImagePreviewUrl(`https://drive.google.com/uc?id=${fileId}`);
-        setImageUrlError("");
+        if (fileId) {
+          // Set the transformed URL in formData
+          const transformedUrl = `https://drive.google.com/uc?id=${fileId}`;
+          setFormData({
+            ...formData,
+            [name]: transformedUrl,
+          });
+          setImagePreviewUrl(transformedUrl); // Update the preview URL
+          setImageUrlError(""); // Clear any previous error
+        }
       } else {
+        // If the URL is invalid, reset the preview and show an error
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
         setImagePreviewUrl("");
         setImageUrlError("Insira um link válido do Google Drive.");
       }
+    } else {
+      // For other fields, update formData normally
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here, you can handle the form submission, for example, by sending formData to an API or saving it locally.
-    console.log(formData);
+
+    // Show a confirmation dialog
+    const userConfirmed = window.confirm(
+      "Tem certeza que deseja adicionar esta Arte?"
+    );
+    if (!userConfirmed) {
+      return; // Exit if the user cancels
+    }
+
+    // Set loading state to true
+    setIsLoading(true);
+
+    const art = {
+      title: formData.title,
+      dimensions: formData.dimensions,
+      description: formData.description,
+      category: formData.category,
+      year: formData.year.toString(), // Ensure year is a string
+      image_url: formData.imageUrl, // Use the imageUrl from formData
+      is_visible: formData.is_visible,
+      is_available: formData.is_available,
+      in_carousel: formData.in_carousel,
+    };
+
+    try {
+      const response = await CreateArt(art);
+      if (response.success) {
+        console.log("Art created successfully!");
+        // Optionally reset the form
+        setFormData({
+          title: "",
+          dimensions: "",
+          description: "",
+          category: "painting",
+          year: new Date().getFullYear(),
+          imageUrl: "",
+          is_visible: false,
+          is_available: false,
+          in_carousel: false,
+        });
+        setImagePreviewUrl("");
+      } else {
+        console.error("Failed to create art:", response.error);
+      }
+    } catch (error) {
+      console.error("Error while creating art:", error);
+    } finally {
+      // Set loading state to false
+      setIsLoading(false);
+      alert("Arte adicionada com sucesso!");
+    }
   };
 
   return (
@@ -60,6 +127,46 @@ export default function UploadForm() {
         onSubmit={handleSubmit}
         className="w-full text-xs p-4 border border-[--border-color-default] rounded-md max-w-[400px]"
       >
+        {/* Image URL */}
+        <div className="flex flex-col mb-4">
+          <label htmlFor="imageUrl" className="font-bold">
+            Image URL (Google Drive)
+          </label>
+          <p className="text-[--foreground-secondary] mb-2 ">
+            Colar o link da imagem no Google Drive.
+          </p>
+          <input
+            type="url"
+            id="imageUrl"
+            name="imageUrl"
+            className={twMerge(
+              "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md",
+              imageUrlError && "border-red-500"
+            )}
+            value={formData.imageUrl}
+            placeholder="https://drive.google.com/file/d/..."
+            onChange={handleChange}
+            required
+          />
+          {imageUrlError && (
+            <p className="text-red-500 mt-2">{imageUrlError}</p>
+          )}
+          <div className="relative my-4 max-w-40 max-h-40 rounded-md">
+            {imagePreviewUrl ? (
+              <Image
+                src={imagePreviewUrl}
+                alt="Preview"
+                width={100}
+                height={100}
+                className="border border-[--border-color-default] rounded-md"
+                onError={() => console.log("erro")}
+              />
+            ) : (
+              <div className="w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse rounded-md" />
+            )}
+          </div>
+        </div>
+
         {/* Title */}
         <div className="flex flex-col mb-4">
           <label htmlFor="title" className="mb-2 font-bold">
@@ -148,51 +255,65 @@ export default function UploadForm() {
           />
         </div>
 
-        {/* Image URL */}
+        {/* Boolean Fields */}
         <div className="flex flex-col mb-4">
-          <label htmlFor="imageUrl" className="font-bold">
-            Image URL (Google Drive)
-          </label>
-          <p className="text-[--foreground-secondary] mb-2 ">
-            Colar o link da imagem no Google Drive.
-          </p>
-          <input
-            type="url"
-            id="imageUrl"
-            name="imageUrl"
-            className={twMerge(
-              "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md",
-              imageUrlError && "border-red-500"
-            )}
-            value={formData.imageUrl}
-            placeholder="https://drive.google.com/file/d/..."
-            onChange={handleChange}
-            required
-          />
-          {imageUrlError && (
-            <p className="text-red-500 mt-2">{imageUrlError}</p>
-          )}
-          <div className="relative mb-4 max-w-40 max-h-40 rounded-md">
-            {imagePreviewUrl ? (
-              <Image
-                src={imagePreviewUrl}
-                alt="Preview"
-                width={100}
-                height={100}
-                onError={() => console.log("erro")}
+          <label className="mb-2 font-bold">Opções</label>
+          <div className="flex flex-col gap-4">
+            {/* Is Visible */}
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="is_visible"
+                checked={formData.is_visible}
+                onChange={(e) =>
+                  setFormData({ ...formData, is_visible: e.target.checked })
+                }
               />
-            ) : (
-              <div className="w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse rounded-md" />
-            )}
+              Visível
+            </label>
+
+            {/* Is Available */}
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="is_available"
+                checked={formData.is_available}
+                onChange={(e) =>
+                  setFormData({ ...formData, is_available: e.target.checked })
+                }
+              />
+              Disponível para venda
+            </label>
+
+            {/* In Carousel */}
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="in_carousel"
+                checked={formData.in_carousel}
+                onChange={(e) =>
+                  setFormData({ ...formData, in_carousel: e.target.checked })
+                }
+              />
+              No carrossel
+            </label>
           </div>
         </div>
 
         <div className="flex flex-col mb-4">
           <button
             type="submit"
-            className="flex flex-row gap-2 items-center justify-center font-bold h-10 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full"
+            className="flex flex-row gap-2 items-center justify-center h-10 px-4 
+            text-xs font-bold text-[--foreground-inverse] 
+            bg-[--background-inverse] rounded-full 
+            disabled:bg-[--background-disabled] disabled:text-[--foreground-disabled]"
+            disabled={isLoading || !formData.imageUrl || imageUrlError !== ""}
           >
-            Add Art
+            {isLoading ? (
+              <div className="animate-spin h-4 w-4 border-2 border-t-transparent border-[--foreground-disabled] rounded-full"></div>
+            ) : (
+              "Adicionar Arte"
+            )}
           </button>
         </div>
       </form>

@@ -13,6 +13,8 @@ export type Art = {
   in_carousel: boolean;
   is_visible: boolean;
   is_available: boolean;
+  createdAt: string; // Timestamp for when the art was created
+  updatedAt: string; // Timestamp for when the art was last updated
 };
 
 export type Category = {

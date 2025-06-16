@@ -70,7 +70,7 @@ export async function fetchBugs(
     const query = `
     SELECT * FROM arts
     ${whereSQL}
-    ORDER BY id
+    ORDER BY createdAt DESC
   `;
 
     const data = await sql.query(query, values);
@@ -255,6 +255,36 @@ export async function setArtAvailabilitylById(id: string, sellable: boolean) {
     return { success: true };
   } catch (error) {
     console.error("Erro ao atualizar a arte:" + id, error);
+    return { success: false, error };
+  }
+}
+
+export async function createArt(art: Partial<Art>) {
+  try {
+    // Set default values for optional fields
+    const {
+      title,
+      dimensions,
+      description,
+      category = "uncategorized", // Default category
+      year = "0000", // Default year
+      image_url, // Image URL is required
+      is_visible = false, // Default visibility
+      is_available = false, // Default availability
+      in_carousel = false, // Default carousel status
+    } = art;
+
+    const createdAt = new Date().toISOString(); // Current timestamp
+    const updatedAt = createdAt; // Same as createdAt for new items
+
+    await sql`
+            INSERT INTO arts (title, dimensions, description, category, year, image_url, is_visible, is_available, in_carousel, createdAt, updatedAt)
+      VALUES (${title}, ${dimensions}, ${description}, ${category}, ${year}, ${image_url}, ${is_visible}, ${is_available}, ${in_carousel}, ${createdAt}, ${updatedAt})
+    `;
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao criar nova arte:", error);
     return { success: false, error };
   }
 }
