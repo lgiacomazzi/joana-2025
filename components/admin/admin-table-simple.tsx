@@ -27,6 +27,7 @@ import {
 } from "@/app/actions";
 import { useSearchParams } from "next/navigation";
 import { categoryTranslations } from "@/lib/utils";
+import UploadForm from "./upload-form";
 
 export const TableHead = ({ children, className }: ComponentProps<"th">) => {
   return (
@@ -60,6 +61,7 @@ export const AdminTable = () => {
 
   const [arts, setArts] = useState<Art[]>([]);
   const [loading, setLoading] = useState(false);
+  const [uploadFormOpen, setUploadFormOpen] = useState(false);
 
   console.log("Renderizando Table com categoria", category);
 
@@ -119,17 +121,22 @@ export const AdminTable = () => {
 
   return (
     <div className="flex-1 overflow-y-auto">
+      {uploadFormOpen && (
+        <UploadForm setUploadFormOpen={() => setUploadFormOpen(false)} />
+      )}
       <div className="px-4 pt-4">
         <div className="flex justify-between gap-2">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
             {category ? categoryTranslations[category] : "Todas as Artes"}
           </h1>
-          <Link href="/admin/upload">
-            <button className="flex flex-row gap-1 items-center justify-center font-bold h-8 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full">
-              <PlusIcon className="w-4" />
-              Add Art
-            </button>
-          </Link>
+
+          <button
+            onClick={() => setUploadFormOpen(true)}
+            className="flex flex-row gap-1 items-center justify-center font-bold h-8 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full"
+          >
+            <PlusIcon className="w-4" />
+            Add Art
+          </button>
         </div>
 
         <p className="text-xs text-[--foreground-secondary]">
