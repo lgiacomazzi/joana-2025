@@ -6,13 +6,12 @@ import { Art } from "@/lib/definitions";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 function ProcessedImage({ art }: { art: Art }) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   const handleLoadingComplete = () => {
-    // setTimeout(() => {
-    setIsLoaded(true);
-    // }, 10000); // simulate 1.5s delay
+    console.log("loaded image");
+    setLoading(false);
   };
 
   const handleError = () => {
@@ -20,18 +19,14 @@ function ProcessedImage({ art }: { art: Art }) {
   };
 
   return (
-    <>
-      {hasError && (
+    <div className="relative">
+      {hasError ? (
         <div className="bg-[--background-disabled] min-h-[200px] flex items-center justify-center">
           <ExclamationCircleIcon className="h-6 w-6 text-[--foreground-tertiary]" />
         </div>
-      )}
-      {!isLoaded && (
-        <div className="absolute w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse" />
-      )}
-      {!hasError && (
+      ) : (
         <Image
-          className="w-full"
+          className="w-full bg-[--background-disabled]"
           src={art.image_url}
           alt={art.title}
           width={400}
@@ -39,13 +34,16 @@ function ProcessedImage({ art }: { art: Art }) {
           onLoad={handleLoadingComplete}
           onError={handleError}
           style={{
-            opacity: isLoaded ? 1 : 0,
-            scale: isLoaded ? 1 : 0.95,
+            opacity: loading ? 0 : 1,
+            scale: loading ? 0.95 : 1,
             transition: ".4s",
           }}
         />
       )}
-    </>
+      {loading && (
+        <div className="absolute inset-0 bg-[--background-disabled] animate-pulse -z-10" />
+      )}
+    </div>
   );
 }
 

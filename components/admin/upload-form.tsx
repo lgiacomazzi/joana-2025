@@ -4,8 +4,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { CreateArt } from "@/app/actions";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
-export default function UploadForm() {
+export default function UploadForm({
+  setUploadFormOpen,
+}: {
+  setUploadFormOpen: () => void;
+}) {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(""); // Preview URL for the Google Drive image
   const [imageUrlError, setImageUrlError] = useState(""); // Error state for image URL
   const [isLoading, setIsLoading] = useState(false); // Loading state from submit
@@ -122,201 +127,212 @@ export default function UploadForm() {
   };
 
   return (
-    <div className="flex m-auto justify-center gap-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full text-xs p-4 border border-[--border-color-default] rounded-md max-w-[400px]"
-      >
-        {/* Image URL */}
-        <div className="flex flex-col mb-4">
-          <label htmlFor="imageUrl" className="font-bold">
-            Image URL (Google Drive)
-          </label>
-          <p className="text-[--foreground-secondary] mb-2 ">
-            Colar o link da imagem no Google Drive.
-          </p>
-          <input
-            type="url"
-            id="imageUrl"
-            name="imageUrl"
-            className={twMerge(
-              "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md",
-              imageUrlError && "border-red-500"
-            )}
-            value={formData.imageUrl}
-            placeholder="https://drive.google.com/file/d/..."
-            onChange={handleChange}
-            required
-          />
-          {imageUrlError && (
-            <p className="text-red-500 mt-2">{imageUrlError}</p>
-          )}
-          <div className="relative my-4 max-w-40 max-h-40 rounded-md">
-            {imagePreviewUrl ? (
-              <Image
-                src={imagePreviewUrl}
-                alt="Preview"
-                width={100}
-                height={100}
-                className="border border-[--border-color-default] rounded-md"
-                onError={() => console.log("erro")}
-              />
-            ) : (
-              <div className="w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse rounded-md" />
-            )}
-          </div>
-        </div>
-
-        {/* Title */}
-        <div className="flex flex-col mb-4">
-          <label htmlFor="title" className="mb-2 font-bold">
-            Título da Obra
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
-            value={formData.title}
-            onChange={handleChange}
-            placeholder="Nova Obra"
-            required
-          />
-        </div>
-
-        {/* Dimensions */}
-        <div className="flex flex-col mb-4">
-          <label htmlFor="dimensions" className="mb-2 font-bold">
-            Dimensões
-          </label>
-          <input
-            type="text"
-            id="dimensions"
-            name="dimensions"
-            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
-            value={formData.dimensions}
-            placeholder="100x100cm"
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Description */}
-        <div className="flex flex-col mb-4">
-          <label htmlFor="description" className="mb-2 font-bold">
-            Descrição
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Tinta acrílica sobre canvas"
-            required
-          ></textarea>
-        </div>
-
-        {/* Category */}
-        <div className="flex flex-col mb-4">
-          <label htmlFor="category" className="mb-2 font-bold">
-            Categoria
-          </label>
-          <select
-            id="category"
-            name="category"
-            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="painting">Pinturas</option>
-            <option value="drawing">Desenhos</option>
-            <option value="digital">Arte Digital</option>
-            <option value="illustration">Ilustrações</option>
-            <option value="collage">Colagens</option>
-          </select>
-        </div>
-
-        {/* Year */}
-        <div className="flex flex-col mb-4">
-          <label htmlFor="year" className="mb-2 font-bold">
-            Ano
-          </label>
-          <input
-            type="number"
-            id="year"
-            name="year"
-            className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
-            value={formData.year}
-            onChange={handleChange}
-            placeholder="0000"
-            required
-          />
-        </div>
-
-        {/* Boolean Fields */}
-        <div className="flex flex-col mb-4">
-          <label className="mb-2 font-bold">Opções</label>
-          <div className="flex flex-col gap-4">
-            {/* Is Visible */}
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="is_visible"
-                checked={formData.is_visible}
-                onChange={(e) =>
-                  setFormData({ ...formData, is_visible: e.target.checked })
-                }
-              />
-              Visível
-            </label>
-
-            {/* Is Available */}
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="is_available"
-                checked={formData.is_available}
-                onChange={(e) =>
-                  setFormData({ ...formData, is_available: e.target.checked })
-                }
-              />
-              Disponível para venda
-            </label>
-
-            {/* In Carousel */}
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="in_carousel"
-                checked={formData.in_carousel}
-                onChange={(e) =>
-                  setFormData({ ...formData, in_carousel: e.target.checked })
-                }
-              />
-              No carrossel
-            </label>
-          </div>
-        </div>
-
-        <div className="flex flex-col mb-4">
-          <button
-            type="submit"
-            className="flex flex-row gap-2 items-center justify-center h-10 px-4 
-            text-xs font-bold text-[--foreground-inverse] 
-            bg-[--background-inverse] rounded-full 
-            disabled:bg-[--background-disabled] disabled:text-[--foreground-disabled]"
-            disabled={isLoading || !formData.imageUrl || imageUrlError !== ""}
-          >
-            {isLoading ? (
-              <div className="animate-spin h-4 w-4 border-2 border-t-transparent border-[--foreground-disabled] rounded-full"></div>
-            ) : (
-              "Adicionar Arte"
-            )}
+    <div className="fixed top-0 left-0 flex w-full h-full z-30 py-[--header-height] overflow-y-scroll">
+      <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg md:w-[400px] z-40">
+        <div className="flex flex-row justify-between items-center">
+          <h1 className="text-[--foreground-primary] font-bold text-xl">
+            Nova Arte
+          </h1>
+          <button onClick={() => setUploadFormOpen()}>
+            <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
-      </form>
+        <form onSubmit={handleSubmit} className="w-full text-xs">
+          {/* Image URL */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="imageUrl" className="font-bold">
+              Image URL (Google Drive)
+            </label>
+            <p className="text-[--foreground-secondary] mb-2 ">
+              Colar o link da imagem no Google Drive.
+            </p>
+            <input
+              type="url"
+              id="imageUrl"
+              name="imageUrl"
+              className={twMerge(
+                "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md",
+                imageUrlError && "border-red-500"
+              )}
+              value={formData.imageUrl}
+              placeholder="https://drive.google.com/file/d/..."
+              onChange={handleChange}
+              required
+            />
+            {imageUrlError && (
+              <p className="text-red-500 mt-2">{imageUrlError}</p>
+            )}
+            <div className="relative my-4 max-w-40 max-h-40 rounded-md">
+              {imagePreviewUrl ? (
+                <Image
+                  src={imagePreviewUrl}
+                  alt="Preview"
+                  width={100}
+                  height={100}
+                  className="border border-[--border-color-default] rounded-md"
+                  onError={() => console.log("erro")}
+                />
+              ) : (
+                <div className="w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse rounded-md" />
+              )}
+            </div>
+          </div>
+
+          {/* Title */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="title" className="mb-2 font-bold">
+              Título da Obra
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Nova Obra"
+              required
+            />
+          </div>
+
+          {/* Dimensions */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="dimensions" className="mb-2 font-bold">
+              Dimensões
+            </label>
+            <input
+              type="text"
+              id="dimensions"
+              name="dimensions"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              value={formData.dimensions}
+              placeholder="100x100cm"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Description */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="description" className="mb-2 font-bold">
+              Descrição
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Tinta acrílica sobre canvas"
+              required
+            ></textarea>
+          </div>
+
+          {/* Category */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="category" className="mb-2 font-bold">
+              Categoria
+            </label>
+            <select
+              id="category"
+              name="category"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              value={formData.category}
+              onChange={handleChange}
+              required
+            >
+              <option value="painting">Pinturas</option>
+              <option value="drawing">Desenhos</option>
+              <option value="digital">Arte Digital</option>
+              <option value="illustration">Ilustrações</option>
+              <option value="collage">Colagens</option>
+            </select>
+          </div>
+
+          {/* Year */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="year" className="mb-2 font-bold">
+              Ano
+            </label>
+            <input
+              type="number"
+              id="year"
+              name="year"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              value={formData.year}
+              onChange={handleChange}
+              placeholder="0000"
+              required
+            />
+          </div>
+
+          {/* Boolean Fields */}
+          <div className="flex flex-col mb-4">
+            <label className="mb-2 font-bold">Opções</label>
+            <div className="flex flex-col gap-4">
+              {/* Is Visible */}
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="is_visible"
+                  checked={formData.is_visible}
+                  onChange={(e) =>
+                    setFormData({ ...formData, is_visible: e.target.checked })
+                  }
+                />
+                Visível
+              </label>
+
+              {/* Is Available */}
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="is_available"
+                  checked={formData.is_available}
+                  onChange={(e) =>
+                    setFormData({ ...formData, is_available: e.target.checked })
+                  }
+                />
+                Disponível para venda
+              </label>
+
+              {/* In Carousel */}
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="in_carousel"
+                  checked={formData.in_carousel}
+                  onChange={(e) =>
+                    setFormData({ ...formData, in_carousel: e.target.checked })
+                  }
+                />
+                No carrossel
+              </label>
+            </div>
+          </div>
+
+          <div className="flex flex-col mb-4">
+            <button
+              type="submit"
+              className="flex flex-row gap-2 items-center justify-center h-10 px-4 
+            text-sm font-bold text-[--foreground-inverse] 
+            bg-[--background-inverse] rounded-full 
+            disabled:bg-[--background-disabled] disabled:text-[--foreground-disabled]"
+              disabled={isLoading || !formData.imageUrl || imageUrlError !== ""}
+            >
+              {isLoading ? (
+                <div className="animate-spin h-4 w-4 border-2 border-t-transparent border-[--foreground-disabled] rounded-full"></div>
+              ) : (
+                "Adicionar Arte"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        id="overlay"
+        className="fixed top-0 left-0 w-full h-full bg-[--background-default-blur] backdrop-blur-sm "
+      ></div>
     </div>
   );
 }

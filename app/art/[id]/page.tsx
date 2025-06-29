@@ -20,14 +20,14 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
   const art = await fetchArtById(params.id);
   const relatedArts = await fetchRelatedArtsFromId(params.id);
 
-  const whatsappMessage = `Olá, acessei seu site e me interessei por esta obra: ${process.env.PUBLIC_SITE_URL}/art/${params.id}`;
-  const whatsappUrl = `https://wa.me/554884607338?text=${encodeURIComponent(
-    whatsappMessage
-  )}`;
+  const whatsappMessage = `Olá, acessei seu site e me interessei por esta obra: ${process.env.NEXT_PUBLIC_SITE_URL}/art/${params.id}`;
+  const whatsappUrl = `https://wa.me/${
+    process.env.NEXT_PUBLIC_JOANA_PHONE_NUMBER
+  }?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <>
-      <div className="flex flex-col md:flex-row md:m-auto md: md:max-w-[80vw] h-[calc(100dvh-2*(var(--header-height)))] border-b border-[--border-color-default] md:border-none mb-4 md:mb-20 justify-center">
+      <div className="flex flex-col md:flex-row md:m-auto md: md:max-w-[80vw] h-[calc(100vh-2*(var(--header-height)))] border-b border-[--border-color-default] md:border-none md:mb-20 justify-center">
         <div className="relative flex-1 m-4">
           <Image
             src={art.image_url}
@@ -54,21 +54,28 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
             <Link
               href={whatsappUrl}
               target="_blank"
-              className="w-full flex flex-row gap-1 items-center justify-center font-bold h-12 px-6 bg-green-500 text-black rounded-full active:scale-90 transition-all"
+              className="w-full flex flex-1 flex-row gap-2 items-center justify-center font-bold h-12 px-6 bg-green-500 text-black rounded-full active:scale-90 transition-all"
             >
-              <ShoppingBagIcon className="w-4 h-4" />
+              <ShoppingBagIcon className="w-6 h-6" />
               Comprar
             </Link>
           ) : (
             <button
               disabled
-              className="w-full flex flex-row gap-1 items-center justify-center font-bold h-12 px-6 bg-[--background-disabled] text-[--foreground-disabled] rounded-full"
+              className="flex flex-1 w-full flex-row gap-2 items-center justify-center font-bold h-12 px-6 bg-[--background-disabled] text-[--foreground-disabled] rounded-full"
             >
               Indisponível
             </button>
           )}
         </div>
       </div>
+      {relatedArts && relatedArts.length > 0 && (
+        <div className="p-4">
+          <p className="uppercase text-xs text-[--foreground-tertiary]">
+            Obras relacionadas:
+          </p>
+        </div>
+      )}
       <Galery arts={relatedArts} />
     </>
   );

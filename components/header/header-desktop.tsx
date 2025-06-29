@@ -69,7 +69,7 @@ export default function DesktopNavBar({
       </Link>
       <Link
         className="w-4 text-[--foreground-primary]"
-        href="https://www.instagram.com/joanasbrum/"
+        href={`${process.env.NEXT_PUBLIC_JOANA_INSTAGRAM_URL}`}
       >
         <Instagram className="h-4 w-4" />
       </Link>

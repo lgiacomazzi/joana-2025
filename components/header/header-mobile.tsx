@@ -10,6 +10,10 @@ import {
   XMarkIcon,
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
+import Instagram from "@/public/instagram.svg";
+import WhatsApp from "@/public/whatsApp.svg";
+import JoanaBrum from "@/public/joana-new.svg";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
 export function MobileNavLink({
   className,
@@ -19,7 +23,7 @@ export function MobileNavLink({
   return (
     <Link
       className={twMerge(
-        "flex p-4 text-md uppercase text-[--foreground-primary] justify-between border-[--border-color-default] border-b",
+        "flex p-4 text-sm uppercase text-[--foreground-primary] justify-between border-[--border-color-default] border-b",
         className
       )}
       {...props}
@@ -40,12 +44,12 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
       </button>
       <div
         className={twMerge(
-          "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-[--background-default] backdrop-blur-xl pb-20 duration-200",
+          "flex flex-col gap-4 fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-[--background-default] pb-20 duration-200",
           open === false && "translate-x-[100%]",
           open === true && "translate-x-[0%]"
         )}
       >
-        <div className="flex justify-end p-4">
+        <div className="flex flex-row justify-end h-[--header-height]">
           <button
             className="p-3 text-[--foreground-primary]"
             onClick={() => setOpen(false)}
@@ -60,9 +64,6 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
           <MobileNavLink href="bio" onClick={() => setOpen(false)}>
             Bio
           </MobileNavLink>
-          <MobileNavLink href="bio" onClick={() => setOpen(false)}>
-            Instagram
-          </MobileNavLink>
           {categories.map((category, index) => (
             <div key={category.name}>
               <MobileNavLink
@@ -72,23 +73,34 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
               >
                 {categoryTranslations[category.name]}
               </MobileNavLink>
-              {/* {category.years.map(
-                (year, index) =>
-                  year && (
-                    <MobileNavLink
-                      key={index}
-                      href={`/${category.name}/${year}`}
-                      className="flex pl-12"
-                      onClick={() => setOpen(false)}
-                    >
-                      {year}
-                      <ChevronRightIcon className="ml-2 w-4" />
-                    </MobileNavLink>
-                  )
-              )} */}
             </div>
           ))}
         </nav>
+        <div className="flex flex-row items-center p-4 text-[--foreground-secondary]">
+          <JoanaBrum className="h-6 mr-auto" />
+
+          <Link
+            href={`${process.env.NEXT_PUBLIC_JOANA_INSTAGRAM_URL}`}
+            target="_blank"
+            className="p-3"
+          >
+            <Instagram className="h-6 w-6" />
+          </Link>
+          <Link
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_JOANA_PHONE_NUMBER}`}
+            target="_blank"
+            className="p-3"
+          >
+            <WhatsApp className="h-6 w-6" />
+          </Link>
+          <Link
+            href={`mailto:${process.env.NEXT_PUBLIC_JOANA_EMAIL}`}
+            target="_blank"
+            className="p-3"
+          >
+            <EnvelopeIcon className="h-6 w-6" />
+          </Link>
+        </div>
       </div>
     </div>
   );
