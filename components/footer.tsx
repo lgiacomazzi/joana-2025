@@ -3,7 +3,7 @@ import JoanaBrum from "@/public/joana_brum_brasil.svg";
 
 export default function Footer() {
   return (
-    <footer className="bg-[--background-primary] border-[--border-color-default] border-t px-4 py-10 text-xs text-[--foreground-primary] md:hidden">
+    <footer className="mt-4 bg-[--background-primary] border-[--border-color-default] border-t px-4 py-10 text-xs text-[--foreground-primary] md:hidden">
       <div className="flex flex-col items-center text-center">
         <JoanaBrum className="mb-8 w-28" />
         <p>

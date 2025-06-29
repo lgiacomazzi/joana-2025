@@ -11,9 +11,9 @@ import {
 } from "@/lib/data";
 import { Art } from "@/lib/definitions";
 
-export async function GetArts() {
+export async function GetArts(category?: string) {
   try {
-    const data = await fetchBugs();
+    const data = await fetchBugs(undefined, category, undefined);
     return data;
   } catch (error) {
     console.error("Erro buscando artes.", error);

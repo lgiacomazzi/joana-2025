@@ -18,7 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={twMerge("antialised", ibm_Plex_Mono.className)}>
         <Header />
-        {children}
+        <div className="pt-[--header-height] min-h-[100dvh] bg-[--background-primary]">
+          {children}
+        </div>
+        {/* Add padding equal to header height */}
         <Footer />
       </body>
     </html>

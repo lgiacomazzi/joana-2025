@@ -24,12 +24,7 @@ export default async function CategoryPage({
   const arts = await fetchCategoryArts(params.category);
 
   return (
-    <div className="pt-[64px]">
-      <div className="flex gap-4 px-4 md:max-w-5xl md:m-auto my-4">
-        <h1 className="uppercase text-lg">
-          {categoryTranslations[params.category]}
-        </h1>
-      </div>
+    <div className="py-4">
       <Galery arts={arts} />
     </div>
   );

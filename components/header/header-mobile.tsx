@@ -19,7 +19,7 @@ export function MobileNavLink({
   return (
     <Link
       className={twMerge(
-        "block flex p-3 text-md uppercase text-zinc-100 justify-between border-[--border-color-default] border-b",
+        "flex p-4 text-md uppercase text-[--foreground-primary] justify-between border-[--border-color-default] border-b",
         className
       )}
       {...props}
@@ -40,20 +40,29 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
       </button>
       <div
         className={twMerge(
-          "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-zinc-950 pb-20 duration-200",
+          "fixed left-0 top-0 z-50 h-screen w-full overflow-y-scroll bg-[--background-default] backdrop-blur-xl pb-20 duration-200",
           open === false && "translate-x-[100%]",
           open === true && "translate-x-[0%]"
         )}
       >
         <div className="flex justify-end p-4">
-          <button className="p-3 text-zinc-100" onClick={() => setOpen(false)}>
+          <button
+            className="p-3 text-[--foreground-primary]"
+            onClick={() => setOpen(false)}
+          >
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
         <nav>
-          <MobileNavLink href="/">Home</MobileNavLink>
-          <MobileNavLink href="bio">Bio</MobileNavLink>
-          <MobileNavLink href="bio">Instagram</MobileNavLink>
+          <MobileNavLink href="/" onClick={() => setOpen(false)}>
+            Home
+          </MobileNavLink>
+          <MobileNavLink href="bio" onClick={() => setOpen(false)}>
+            Bio
+          </MobileNavLink>
+          <MobileNavLink href="bio" onClick={() => setOpen(false)}>
+            Instagram
+          </MobileNavLink>
           {categories.map((category, index) => (
             <div key={category.name}>
               <MobileNavLink

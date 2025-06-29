@@ -15,7 +15,7 @@ export default async function YearlyCategoryPage({
   const arts = await fetchYearlyPaintings(params.year, params.category);
 
   return (
-    <div className="pt-[64px]">
+    <div className="">
       {arts.map((art: Art, index: number) => (
         <ArtDisplay art={art} key={index} />
       ))}
