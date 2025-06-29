@@ -10,7 +10,6 @@ function ProcessedImage({ art }: { art: Art }) {
   const [hasError, setHasError] = useState(false);
 
   const handleLoadingComplete = () => {
-    console.log("loaded image");
     setLoading(false);
   };
 
@@ -26,7 +25,7 @@ function ProcessedImage({ art }: { art: Art }) {
         </div>
       ) : (
         <Image
-          className="w-full bg-[--background-disabled]"
+          className="w-full"
           src={art.image_url}
           alt={art.title}
           width={400}

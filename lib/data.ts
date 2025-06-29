@@ -86,6 +86,24 @@ export async function fetchBugs(
   }
 }
 
+export async function fetchArtsBySearch(search?: string) {
+  console.log("fetchArtsBySearch with ", search);
+
+  try {
+    const data = await sql<Art>`
+    SELECT * FROM arts
+    WHERE (title ILIKE ${`%${search}%`} OR description ILIKE ${`%${search}%`}) AND is_visible = TRUE
+    ORDER BY createdAt DESC, updatedAt DESC, title ASC
+  `;
+
+    const arts = data.rows;
+    return arts;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all arts.");
+  }
+}
+
 export async function fetchArtById(id: string) {
   try {
     const data = await sql<Art>`

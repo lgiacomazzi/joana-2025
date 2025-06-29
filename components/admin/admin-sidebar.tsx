@@ -2,9 +2,14 @@
 
 import { Category } from "@/lib/definitions";
 import { categoryTranslations } from "@/lib/utils";
-import { FolderIcon } from "@heroicons/react/24/outline";
+import {
+  CurrencyDollarIcon,
+  FolderIcon,
+  Squares2X2Icon,
+  StarIcon,
+} from "@heroicons/react/24/outline";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface AdminSidebarProps {
@@ -15,11 +20,13 @@ export function SidebarItem({
   category,
   isSelected,
   children,
+  icon: Icon = FolderIcon,
   ...props
 }: {
   category?: Category;
   children?: React.ReactNode;
   isSelected?: boolean;
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 } & React.LiHTMLAttributes<HTMLLIElement>) {
   return (
     <li
@@ -29,7 +36,7 @@ export function SidebarItem({
       )}
       {...props}
     >
-      <FolderIcon
+      <Icon
         className={twMerge(
           "w-4 h-4 text-[--foreground-tertiary]",
           isSelected && "text-[--foreground-primary"
@@ -66,9 +73,21 @@ export default function AdminSidebar({ categories }: AdminSidebarProps) {
   };
 
   return (
-    <div className="bg-[--background-disabled] border-r border-[--border-color-default] w-60 h-full flex-shrink-0 py-4 overflow-y-auto">
+    <div className="bg-[--background-disabled] border-r border-[--border-color-default] w-60 h-full flex flex-col gap-4 flex-shrink-0 py-4 overflow-y-auto">
+      <ul className="px-2 hidden">
+        <SidebarItem icon={StarIcon} onClick={() => handleCategoryClick("all")}>
+          Carousel
+        </SidebarItem>
+        <SidebarItem
+          icon={CurrencyDollarIcon}
+          onClick={() => handleCategoryClick("all")}
+        >
+          Disponíveis
+        </SidebarItem>
+      </ul>
       <ul className="px-2">
         <SidebarItem
+          icon={Squares2X2Icon}
           isSelected={selectedCategory === null}
           onClick={() => handleCategoryClick("all")}
         >

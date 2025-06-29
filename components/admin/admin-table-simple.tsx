@@ -135,7 +135,7 @@ export const AdminTable = () => {
             className="flex flex-row gap-1 items-center justify-center font-bold h-8 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full"
           >
             <PlusIcon className="w-4" />
-            Add Art
+            Nova Arte
           </button>
         </div>
 
@@ -190,7 +190,7 @@ export const AdminTable = () => {
                           className="text-[--foreground-default] font-bold truncate"
                           title={art.title}
                         >
-                          {art.title || "{Sem título}"}
+                          {art.title || <span className="text-red-500">!</span>}
                         </Link>
                         <span
                           className="text-[--foreground-tertiary] truncate"
