@@ -33,6 +33,8 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
             src={art.image_url}
             alt={art.title}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority
             className="object-contain"
           />
         </div>
@@ -70,8 +72,8 @@ export default async function ArtPage({ params }: { params: ArtPageParams }) {
         </div>
       </div>
       {relatedArts && relatedArts.length > 0 && (
-        <div className="p-4">
-          <p className="uppercase text-xs text-[--foreground-tertiary]">
+        <div className="p-4 md:py-10">
+          <p className="uppercase text-xs text-[--foreground-tertiary] md:text-center">
             Obras relacionadas:
           </p>
         </div>
