@@ -8,10 +8,10 @@ export default function ArtDisplay({ art }: { art: Art }) {
       href={`/art/${art.id}`}
       key={art.id}
       prefetch={false}
-      className="relative flex flex-col justify-center active:scale-90 transition-all break-inside-avoid"
+      className="relative flex flex-col justify-center transition-all break-inside-avoid hover:scale-105"
     >
       <ProcessedImage art={art} />
-      <div className="p-1 md:px-0">
+      <div className="p-1">
         {art.is_available && (
           <p className=" text-xs text-green-500">Disponível</p>
         )}

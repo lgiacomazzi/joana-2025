@@ -31,6 +31,7 @@ function ProcessedImage({ art }: { art: Art }) {
       )}
       {!hasError && (
         <Image
+          className="w-full"
           src={art.image_url}
           alt={art.title}
           width={400}

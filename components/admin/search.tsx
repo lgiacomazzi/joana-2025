@@ -31,7 +31,7 @@ export function Search() {
       value={search}
       onChange={handleChange}
       placeholder="Buscar..."
-      className="text-xs    p-3 bg-[--background-disabled]"
+      className="flex flex-row gap-1 items-center justify-center font-bold h-10 px-4 bg-[--background-deafult] text-xs border rounded-full"
     />
   );
 }

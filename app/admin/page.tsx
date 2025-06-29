@@ -1,40 +1,26 @@
-import { AdminTable } from "@/components/admin/admin-table";
-import { FilterSelect } from "@/components/admin/filter";
-import { Search } from "@/components/admin/search";
-import { fetchBugs, fetchCategories, fetchYears } from "@/lib/data";
+import AdminSidebar from "@/components/admin/admin-sidebar";
+import { AdminTable } from "@/components/admin/admin-table-simple";
+import { fetchCategories } from "@/lib/data";
+
+interface AdminSearchParams {
+  category?: string;
+}
 
 export default async function Admin({
-  searchParams,
+  searchParams: { category },
 }: {
-  searchParams: { search?: string; category?: string; year?: string };
+  searchParams: AdminSearchParams;
 }) {
-  const arts = await fetchBugs(
-    searchParams.search,
-    searchParams.category,
-    searchParams.year
-  );
-  const categories = (await fetchCategories()).map((item) => item.name);
-  const years = (await fetchYears()).map((item) => item.year);
+  const categories = await fetchCategories();
+
+  console.log("Renderizando Admin com categoria", category);
+
+  // const arts = await mockFetchCategoryArts(selectedCategory || undefined);
 
   return (
-    <>
-      <div className="flex w-full justify-between p-4 gap-2 pt-[64px]">
-        <div className="flex gap-2">
-          <Search />
-          <FilterSelect
-            name="category"
-            options={categories}
-            placeholder="Categoria"
-          />
-          <FilterSelect name="year" options={years} placeholder="Anos" />
-        </div>
-        <div className="flex gap-2">
-          <button className="text-xs p-3 border text-bold">Export</button>
-          <button className="text-xs p-3 border text-bold">Import</button>
-          <button className="text-xs p-3 bg-blue-500 text-bold">Add Art</button>
-        </div>
-      </div>
-      <AdminTable arts={arts} />
-    </>
+    <div className="flex flex-row h-[calc(100vh-3rem)] overscroll-contain">
+      <AdminSidebar categories={categories} />
+      <AdminTable />
+    </div>
   );
 }

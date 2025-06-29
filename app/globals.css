@@ -4,6 +4,7 @@
 
 :root {
   --background-default: #F2F2F3;
+  --background-default-blur: #F2F2F3cc;
   --background-disabled: #CAC9CF;
   --background-inverse: #19181B;
   --foreground-default: #19181B;
@@ -12,11 +13,16 @@
   --foreground-disabled: #B0AFB6;
   --foreground-inverse: #F2F2F3;
   --border-color-default: #E5E4E7;
+
+  --header-height: 64px;
+  --carousel-height: calc(95dvh - var(--header-height));
+
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-default: #0C0C0D;
+    --background-default: #090B10;
+    --background-default-blur: #090B10cc;
     --background-disabled: #19181B;
     --background-inverse: #F2F2F3;
     --foreground-default: #F2F2F3;

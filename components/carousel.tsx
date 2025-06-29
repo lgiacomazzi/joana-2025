@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { categoryTranslations } from "@/lib/utils";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 export function Carousel({ arts }: { arts: Art[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,7 +25,7 @@ export function Carousel({ arts }: { arts: Art[] }) {
   }, [currentIndex, goToNext]);
 
   return (
-    <div className="h-[calc(80lvh-64px)] md:h-[100vh]">
+    <div className="h-[--carousel-height]">
       {arts.map((art: Art, index: number) => (
         <Link
           key={art.id}
@@ -45,9 +46,12 @@ export function Carousel({ arts }: { arts: Art[] }) {
               className="object-cover md:object-contain"
             />
           </div>
-          <div className="text-sm uppercase p-4 bg-[--background-disabled]">
-            <span>{categoryTranslations[art.category]}</span> /{" "}
-            <span className="text-[--foreground-tertiary]">{art.year}</span>
+          <div className="flex gap-1 text-sm uppercase items-center justify-center p-4 bg-[--background-disabled]">
+            <span className="text-[--foreground-tertiary] max-w-[100%] truncate">
+              {art.title}
+            </span>
+            /<span>{categoryTranslations[art.category]}</span>
+            <ChevronRightIcon className="w-4 h-4 ml-auto" />
           </div>
         </Link>
       ))}
