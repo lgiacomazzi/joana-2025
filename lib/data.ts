@@ -72,7 +72,7 @@ export async function fetchBugs(
     const query = `
     SELECT * FROM arts
     ${whereSQL}
-    ORDER BY createdAt DESC, updatedAt DESC, title ASC
+    ORDER BY createdAt DESC, id ASC
   `;
 
     const data = await sql.query(query, values);
@@ -321,6 +321,45 @@ export async function setArtAvailabilitylById(id: string, sellable: boolean) {
   }
 }
 
+export async function updateArtById(id: string, art: Partial<Art>) {
+  try {
+    const {
+      title,
+      dimensions,
+      description,
+      category,
+      year,
+      image_url, // Image URL is required
+      is_visible,
+      is_available,
+      in_carousel,
+    } = art;
+
+    const updatedAt = new Date().toISOString();
+
+    await sql`
+      UPDATE arts 
+      SET 
+        title = ${title}, 
+        dimensions = ${dimensions},
+        description = ${description},
+        category = ${category},
+        year = ${year},
+        image_url = ${image_url},
+        is_visible = ${is_visible},
+        is_available = ${is_available},
+        in_carousel = ${in_carousel},
+        updatedAt = ${updatedAt} 
+      WHERE id = ${id}
+    `;
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar a arte:" + id, error);
+    return { success: false, error };
+  }
+}
+
 export async function createArt(art: Partial<Art>) {
   try {
     // Set default values for optional fields
@@ -340,7 +379,7 @@ export async function createArt(art: Partial<Art>) {
     const updatedAt = createdAt; // Same as createdAt for new items
 
     await sql`
-            INSERT INTO arts (title, dimensions, description, category, year, image_url, is_visible, is_available, in_carousel, createdAt, updatedAt)
+      INSERT INTO arts (title, dimensions, description, category, year, image_url, is_visible, is_available, in_carousel, createdAt, updatedAt)
       VALUES (${title}, ${dimensions}, ${description}, ${category}, ${year}, ${image_url}, ${is_visible}, ${is_available}, ${in_carousel}, ${createdAt}, ${updatedAt})
     `;
 

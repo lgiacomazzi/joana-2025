@@ -55,11 +55,7 @@ export default function AdminSidebar({ categories }: AdminSidebarProps) {
     searchParams.get("category")
   );
 
-  console.log("Renderizando Sidebar com categoria", selectedCategory);
-
   const handleCategoryClick = (name: string) => {
-    console.log("Alterando categoria para", name);
-
     setSelectedCategory(name === "all" ? null : name);
 
     const params = new URLSearchParams();

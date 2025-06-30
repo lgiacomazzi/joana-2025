@@ -1,35 +1,63 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
-import { CreateArt } from "@/app/actions";
+import { CreateArt, UpdateArt } from "@/app/actions";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Art } from "@/lib/definitions";
+import Spinner from "@/public/spinner.svg";
+
+const extractGoogleDriveFileId = (url: string): string | null => {
+  const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
+  return match ? match[1] : null;
+};
+
+const defaultFormData = {
+  title: "",
+  dimensions: "",
+  description: "",
+  category: "painting",
+  year: new Date().getFullYear(),
+  imageUrl: "",
+  is_visible: true, // Default value
+  is_available: false, // Default value
+  in_carousel: false, // Default value
+};
 
 export default function UploadForm({
-  setUploadFormOpen,
+  selectedArt,
+  handleClose,
 }: {
-  setUploadFormOpen: () => void;
+  selectedArt?: Art;
+  handleClose: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(""); // Preview URL for the Google Drive image
-  const [imageUrlError, setImageUrlError] = useState(""); // Error state for image URL
-  const [isLoading, setIsLoading] = useState(false); // Loading state from submit
-  const [formData, setFormData] = useState({
-    title: "",
-    dimensions: "",
-    description: "",
-    category: "painting",
-    year: new Date().getFullYear(),
-    imageUrl: "",
-    is_visible: true, // Default value
-    is_available: false, // Default value
-    in_carousel: false, // Default value
-  });
+  const [formData, setFormData] = useState(defaultFormData);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const extractGoogleDriveFileId = (url: string): string | null => {
-    const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
-    return match ? match[1] : null;
-  };
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [imageUrlError, setImageUrlError] = useState("");
+
+  useEffect(() => {
+    // If selectedArt is provided, populate the formData with its values
+    setFormData({
+      title: selectedArt?.title || "",
+      dimensions: selectedArt?.dimensions || "",
+      description: selectedArt?.description || "",
+      category: selectedArt?.category || "painting",
+      year: selectedArt?.year
+        ? parseInt(selectedArt.year)
+        : new Date().getFullYear(),
+      imageUrl: selectedArt?.image_url || "",
+      is_visible: selectedArt?.is_visible || false,
+      is_available: selectedArt?.is_available || false,
+      in_carousel: selectedArt?.in_carousel || false,
+    });
+
+    if (selectedArt?.image_url) {
+      setImagePreviewUrl(selectedArt.image_url);
+    }
+  }, [selectedArt]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -71,18 +99,20 @@ export default function UploadForm({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCleanForm = () => {
+    setFormData(defaultFormData);
+    setImagePreviewUrl("");
+  };
 
-    // Show a confirmation dialog
+  const handleCreateArt = async () => {
     const userConfirmed = window.confirm(
-      "Tem certeza que deseja adicionar esta Arte?"
+      `Tem certeza que deseja adicionar a arte '` + formData.title + `'?`
     );
+
     if (!userConfirmed) {
       return; // Exit if the user cancels
     }
 
-    // Set loading state to true
     setIsLoading(true);
 
     const art = {
@@ -91,7 +121,7 @@ export default function UploadForm({
       description: formData.description,
       category: formData.category,
       year: formData.year.toString(), // Ensure year is a string
-      image_url: formData.imageUrl, // Use the imageUrl from formData
+      image_url: formData.imageUrl,
       is_visible: formData.is_visible,
       is_available: formData.is_available,
       in_carousel: formData.in_carousel,
@@ -101,19 +131,7 @@ export default function UploadForm({
       const response = await CreateArt(art);
       if (response.success) {
         console.log("Art created successfully!");
-        // Optionally reset the form
-        setFormData({
-          title: "",
-          dimensions: "",
-          description: "",
-          category: "painting",
-          year: new Date().getFullYear(),
-          imageUrl: "",
-          is_visible: false,
-          is_available: false,
-          in_carousel: false,
-        });
-        setImagePreviewUrl("");
+        handleCleanForm();
       } else {
         console.error("Failed to create art:", response.error);
       }
@@ -123,17 +141,69 @@ export default function UploadForm({
       // Set loading state to false
       setIsLoading(false);
       alert("Arte adicionada com sucesso!");
+      handleClose(false);
+    }
+  };
+
+  const handleSaveArt = async () => {
+    const userConfirmed = window.confirm(
+      "Tem certeza que deseja salvar as alterações da arte: '" +
+        formData.title +
+        "'?"
+    );
+    if (!userConfirmed) {
+      return; // Exit if the user cancels
+    }
+    setIsLoading(true);
+
+    const art = {
+      title: formData.title,
+      dimensions: formData.dimensions,
+      description: formData.description,
+      category: formData.category,
+      year: formData.year.toString(), // Ensure year is a string
+      image_url: formData.imageUrl,
+      is_visible: formData.is_visible,
+      is_available: formData.is_available,
+      in_carousel: formData.in_carousel,
+    };
+
+    if (selectedArt) {
+      try {
+        const response = await UpdateArt(selectedArt.id, art);
+        if (response.success) {
+          console.log("Art created successfully!");
+          handleCleanForm();
+        } else {
+          console.error("Failed to create art:", response.error);
+        }
+      } catch (error) {
+        console.error("Error while creating art:", error);
+      } finally {
+        // Set loading state to false
+        setIsLoading(false);
+        handleClose(false);
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedArt) {
+      handleSaveArt();
+    } else {
+      handleCreateArt();
     }
   };
 
   return (
     <div className="fixed top-0 left-0 flex w-full h-full z-30 py-[--header-height] overflow-y-scroll">
-      <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg md:w-[400px] z-40">
+      <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg md:w-[600px] z-40">
         <div className="flex flex-row justify-between items-center">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
-            Nova Arte
+            {selectedArt ? "Editar Arte" : "Nova Arte"}
           </h1>
-          <button onClick={() => setUploadFormOpen()}>
+          <button onClick={() => handleClose(false)}>
             <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
@@ -151,7 +221,7 @@ export default function UploadForm({
               id="imageUrl"
               name="imageUrl"
               className={twMerge(
-                "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md",
+                "bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]",
                 imageUrlError && "border-red-500"
               )}
               value={formData.imageUrl}
@@ -187,7 +257,7 @@ export default function UploadForm({
               type="text"
               id="title"
               name="title"
-              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
               value={formData.title}
               onChange={handleChange}
               placeholder="Nova Obra"
@@ -204,7 +274,7 @@ export default function UploadForm({
               type="text"
               id="dimensions"
               name="dimensions"
-              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
               value={formData.dimensions}
               placeholder="100x100cm"
               onChange={handleChange}
@@ -220,7 +290,7 @@ export default function UploadForm({
             <textarea
               id="description"
               name="description"
-              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
               value={formData.description}
               onChange={handleChange}
               placeholder="Tinta acrílica sobre canvas"
@@ -236,7 +306,7 @@ export default function UploadForm({
             <select
               id="category"
               name="category"
-              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
               value={formData.category}
               onChange={handleChange}
               required
@@ -258,7 +328,7 @@ export default function UploadForm({
               type="number"
               id="year"
               name="year"
-              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md"
+              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
               value={formData.year}
               onChange={handleChange}
               placeholder="0000"
@@ -311,17 +381,20 @@ export default function UploadForm({
             </div>
           </div>
 
+          {/* Submit action */}
           <div className="flex flex-col mb-4">
             <button
               type="submit"
               className="flex flex-row gap-2 items-center justify-center h-10 px-4 
-            text-sm font-bold text-[--foreground-inverse] 
-            bg-[--background-inverse] rounded-full 
-            disabled:bg-[--background-disabled] disabled:text-[--foreground-disabled]"
+              text-sm font-bold text-[--foreground-inverse] 
+              bg-[--background-inverse] rounded-full 
+              disabled:bg-[--background-disabled] disabled:text-[--foreground-disabled]"
               disabled={isLoading || !formData.imageUrl || imageUrlError !== ""}
             >
               {isLoading ? (
-                <div className="animate-spin h-4 w-4 border-2 border-t-transparent border-[--foreground-disabled] rounded-full"></div>
+                <Spinner className="text-[--foreground-secondary]" />
+              ) : selectedArt ? (
+                "Salvar"
               ) : (
                 "Adicionar Arte"
               )}
@@ -331,7 +404,8 @@ export default function UploadForm({
       </div>
       <div
         id="overlay"
-        className="fixed top-0 left-0 w-full h-full bg-[--background-default-blur] backdrop-blur-sm "
+        className="fixed top-0 left-0 w-full h-full bg-[--background-default-blur] backdrop-blur-sm"
+        onClick={() => handleClose(false)}
       ></div>
     </div>
   );
