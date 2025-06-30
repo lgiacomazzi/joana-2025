@@ -306,7 +306,7 @@ export default function UploadForm({
             <select
               id="category"
               name="category"
-              className="bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
+              className="appearance-none bg-[--background-default] border-[--border-color-default] border p-2 rounded-md placeholder:text-[--foreground-tertiary]"
               value={formData.category}
               onChange={handleChange}
               required

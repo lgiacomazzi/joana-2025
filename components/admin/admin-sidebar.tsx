@@ -5,12 +5,13 @@ import { categoryTranslations } from "@/lib/utils";
 import {
   CurrencyDollarIcon,
   FolderIcon,
-  Squares2X2Icon,
   StarIcon,
-} from "@heroicons/react/24/outline";
+} from "@heroicons/react/24/solid";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import FolderClose from "@/public/folder-close.svg";
+import FolderOpen from "@/public/folder-open.svg";
 
 interface AdminSidebarProps {
   categories: Category[];
@@ -25,7 +26,7 @@ export function SidebarItem({
 }: {
   category?: Category;
   children?: React.ReactNode;
-  isSelected?: boolean;
+  isSelected?: false | boolean;
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 } & React.LiHTMLAttributes<HTMLLIElement>) {
   return (
@@ -83,7 +84,7 @@ export default function AdminSidebar({ categories }: AdminSidebarProps) {
       </ul>
       <ul className="px-2">
         <SidebarItem
-          icon={Squares2X2Icon}
+          icon={selectedCategory === null ? FolderOpen : FolderClose}
           isSelected={selectedCategory === null}
           onClick={() => handleCategoryClick("all")}
         >
@@ -93,6 +94,7 @@ export default function AdminSidebar({ categories }: AdminSidebarProps) {
           <SidebarItem
             category={category}
             key={category.name}
+            icon={selectedCategory === category.name ? FolderOpen : FolderClose}
             isSelected={selectedCategory === category.name}
             onClick={() => handleCategoryClick(category.name)}
           />
