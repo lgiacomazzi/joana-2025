@@ -6,9 +6,10 @@ import {
   fetchPaginatedArts,
   fetchBugs,
   setArtAvailabilitylById,
-  createArt as createArtInDatabase,
+  createArt,
   deleteArtById,
   fetchArtsBySearch,
+  updateArtById,
 } from "@/lib/data";
 import { Art } from "@/lib/definitions";
 
@@ -98,7 +99,7 @@ export async function CreateArt(art: Partial<Art>) {
     console.log("Creating new art:", art);
 
     // Call the createArt function from the data.ts file
-    const response = await createArtInDatabase(art);
+    const response = await createArt(art);
 
     if (response.success) {
       console.log("Art created successfully!");
@@ -110,5 +111,25 @@ export async function CreateArt(art: Partial<Art>) {
   } catch (error) {
     console.error("Error while creating art:", error);
     return { success: false, error: "Error while creating art." };
+  }
+}
+
+export async function UpdateArt(id: string, art: Partial<Art>) {
+  try {
+    console.log("Updating art:", art);
+
+    // Call the updatedArt function from the data.ts file
+    const response = await updateArtById(id, art);
+
+    if (response.success) {
+      console.log("Art updated successfully!");
+      return { success: true };
+    } else {
+      console.error("Failed to update art:", response.error);
+      return { success: false, error: response.error };
+    }
+  } catch (error) {
+    console.error("Error while updating art:", error);
+    return { success: false, error: "Error while updating art." };
   }
 }

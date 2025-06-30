@@ -9,6 +9,7 @@ import {
   TrashIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
+import { PencilSquareIcon } from "@heroicons/react/16/solid";
 import {
   StarIcon as StarIconSolid,
   CurrencyDollarIcon as CurrencyDollarIconSolid,
@@ -46,7 +47,7 @@ export const TableCell = ({ children, className }: ComponentProps<"td">) => {
   return (
     <td
       className={twMerge(
-        "p-4 border-b border-[--border-color-default] max-w-[250px]",
+        "p-4 text-[--foreground-secondary] max-w-[250px]",
         className
       )}
     >
@@ -60,32 +61,43 @@ export const AdminTable = () => {
   const category = searchParams.get("category");
 
   const [arts, setArts] = useState<Art[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [uploadFormOpen, setUploadFormOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  console.log("Renderizando Table com categoria", category);
+  const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
+  const [selectedArt, setSelectedArt] = useState<Art>();
+
+  const refetchArts = async () => {
+    const fetchedArts = await GetArts(category || undefined);
+    console.log("Refetched arts:", fetchedArts);
+
+    if (Array.isArray(fetchedArts) && fetchedArts.length > 0) {
+      setArts(fetchedArts);
+    } else {
+      setArts([]);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchArts = async () => {
-      setLoading(true);
-
-      const fetchedArts = await GetArts(category || undefined);
-      console.log("Fetched arts:", fetchedArts);
-
-      if (Array.isArray(fetchedArts) && fetchedArts.length > 0) {
-        setArts(fetchedArts);
-      } else {
-        setArts([]); // Handle error case
-      }
-
-      setLoading(false);
-    };
-
-    fetchArts();
+    setArts([]);
+    setLoading(true);
+    refetchArts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
+
+  useEffect(() => {
+    if (!isUploadFormOpen) {
+      refetchArts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUploadFormOpen]);
 
   const handleAction = async (action: string, id: string) => {
     switch (action) {
+      case "edit":
+        await setSelectedArt(arts.find((art) => art.id === id));
+        await setIsUploadFormOpen(true);
+        break;
       case "hide":
         await SetArtVisibility(id, false);
         break;
@@ -109,29 +121,30 @@ export const AdminTable = () => {
           await DeleteArt(id);
           alert("Arte deletada com sucesso.");
         }
-      // alert("Arte deletada com sucesso.");
-      default:
-        console.warn("Ação desconhecida:", action);
+        break;
     }
-    setLoading(false); // End loading state
-    // Depois de qualquer ação, atualiza os dados:
-    // alert("RefreshKey: " + refreshKey);
-    // setRefreshKey((prev) => prev + 1);
+    // Refetch arts after an action
+    await refetchArts();
   };
 
   return (
     <div className="flex-1 overflow-y-auto">
-      {uploadFormOpen && (
-        <UploadForm setUploadFormOpen={() => setUploadFormOpen(false)} />
+      {/* UploadForm */}
+      {isUploadFormOpen && (
+        <UploadForm
+          selectedArt={selectedArt}
+          handleClose={setIsUploadFormOpen}
+        />
       )}
+
+      {/* Admin Header */}
       <div className="px-4 pt-4">
         <div className="flex justify-between gap-2">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
             {category ? categoryTranslations[category] : "Todas as Artes"}
           </h1>
-
           <button
-            onClick={() => setUploadFormOpen(true)}
+            onClick={() => setIsUploadFormOpen(true)}
             className="flex flex-row gap-1 items-center justify-center font-bold h-8 px-4 bg-[--background-inverse] text-[--foreground-inverse] text-xs border rounded-full"
           >
             <PlusIcon className="w-4" />
@@ -147,12 +160,15 @@ export const AdminTable = () => {
             : `${arts.length} artes`}
         </p>
       </div>
+
+      {/* Results table */}
       <div className="border rounded-md border-[--border-color-default] m-4">
         <table className="min-w-full text-xs table-auto">
           <thead>
             <tr>
               <TableHead>Arte</TableHead>
               <TableHead className="text-left">Descrição</TableHead>
+              <TableHead>Categoria</TableHead>
               <TableHead>Ano</TableHead>
               <TableHead className="w-4"></TableHead>
             </tr>
@@ -168,13 +184,16 @@ export const AdminTable = () => {
               arts.map((art) => (
                 <tr
                   key={art.id}
-                  className={twMerge("h-16", !art.is_visible && "opacity-30")}
+                  className={twMerge(
+                    "h-16 border-b border-[--border-color-default] last:border-none",
+                    !art.is_visible && "opacity-30"
+                  )}
                 >
                   {/* Image and Title*/}
                   <TableCell>
                     <div className="flex flex-1 gap-4 overflow-hidden">
-                      <div className="relative w-8 h-8 flex-shrink-0 rounded-md border bg-[--background-disabled] border-[--border-color-default] overflow-hidden ">
-                        {art.is_visible && (
+                      <div className="relative w-8 h-8 flex flex-shrink-0 rounded-md border bg-[--background-disabled] border-[--border-color-default] items-center justify-center overflow-hidden">
+                        {art.is_visible ? (
                           <Image
                             className="w-full h-full object-cover object-center overflow-hidden"
                             src={art.image_url}
@@ -182,12 +201,14 @@ export const AdminTable = () => {
                             sizes="(max-width: 32px) 32px, 32px"
                             alt={""}
                           />
+                        ) : (
+                          <EyeSlashIcon className="w-4 h-4" />
                         )}
                       </div>
                       <div className="flex flex-1 flex-col overflow-hidden">
                         <Link
                           href={`/art/${art.id}`}
-                          className="text-[--foreground-default] font-bold truncate"
+                          className="text-[--foreground-default] font-bold uppercase truncate"
                           title={art.title}
                         >
                           {art.title || <span className="text-red-500">!</span>}
@@ -212,11 +233,23 @@ export const AdminTable = () => {
                     </p>
                   </TableCell>
 
+                  {/* Category */}
+                  <TableCell>{art.category}</TableCell>
+
+                  {/* Year */}
                   <TableCell>{art.year}</TableCell>
 
                   {/* Action Buttons */}
                   <TableCell>
                     <div className="flex flex-row">
+                      {/* Botão para editar */}
+                      <button
+                        className="p-2"
+                        title="Editar Imagem"
+                        onClick={() => handleAction("edit", art.id)}
+                      >
+                        <PencilSquareIcon className="w-4 h-4 active:scale-90 transition-all " />
+                      </button>
                       {/* Botão para visibilidade */}
                       {art.is_visible ? (
                         <button
@@ -287,11 +320,13 @@ export const AdminTable = () => {
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={5} className="text-center p-4">
-                  Nenhuma arte encontrada.
-                </td>
-              </tr>
+              arts.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="text-center p-4">
+                    Nenhuma arte encontrada.
+                  </td>
+                </tr>
+              )
             )}
           </tbody>
         </table>
