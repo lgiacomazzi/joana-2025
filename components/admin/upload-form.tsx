@@ -65,6 +65,7 @@ export default function UploadForm({
     >
   ) => {
     const { name, value } = e.target;
+    setImagePreviewUrl("");
 
     if (name === "imageUrl") {
       const isValidDriveUrl = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/.test(value);
@@ -80,9 +81,10 @@ export default function UploadForm({
           });
           setImagePreviewUrl(transformedUrl); // Update the preview URL
           setImageUrlError(""); // Clear any previous error
+          setImageUrlError("");
         }
       } else {
-        // If the URL is invalid, reset the preview and show an error
+        // If the URL is invalid show an error
         setFormData({
           ...formData,
           [name]: value,
@@ -102,6 +104,7 @@ export default function UploadForm({
   const handleCleanForm = () => {
     setFormData(defaultFormData);
     setImagePreviewUrl("");
+    setImageUrlError("");
   };
 
   const handleCreateArt = async () => {
@@ -232,20 +235,22 @@ export default function UploadForm({
             {imageUrlError && (
               <p className="text-red-500 mt-2">{imageUrlError}</p>
             )}
-            <div className="relative my-4 max-w-40 max-h-40 rounded-md">
-              {imagePreviewUrl ? (
+            {imagePreviewUrl && (
+              <div className="flex my-4 max-w-20 border border-[--border-color-default] rounded-md bg-[--background-disabled] overflow-hidden">
                 <Image
                   src={imagePreviewUrl}
                   alt="Preview"
-                  width={100}
-                  height={100}
-                  className="border border-[--border-color-default] rounded-md"
-                  onError={() => console.log("erro")}
+                  width={48}
+                  height={48}
+                  className="w-full h-auto"
+                  onError={() => {
+                    setImagePreviewUrl("");
+                    setImageUrlError("Erro ao carregar a imagem.");
+                  }}
                 />
-              ) : (
-                <div className="w-full h-full bg-[--background-disabled] flex items-center justify-center animate-pulse rounded-md" />
-              )}
-            </div>
+                {/* <Spinner className="w-6 h-6 absolute top-50" /> */}
+              </div>
+            )}
           </div>
 
           {/* Title */}
@@ -268,7 +273,7 @@ export default function UploadForm({
           {/* Dimensions */}
           <div className="flex flex-col mb-4">
             <label htmlFor="dimensions" className="mb-2 font-bold">
-              Dimensões
+              Dimensões (Opcional)
             </label>
             <input
               type="text"
@@ -278,7 +283,6 @@ export default function UploadForm({
               value={formData.dimensions}
               placeholder="100x100cm"
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -294,7 +298,6 @@ export default function UploadForm({
               value={formData.description}
               onChange={handleChange}
               placeholder="Tinta acrílica sobre canvas"
-              required
             ></textarea>
           </div>
 

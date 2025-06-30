@@ -41,7 +41,8 @@ export function Carousel({ arts }: { arts: Art[] }) {
             <Image
               src={art.image_url}
               alt={art.title}
-              priority={index === 0}
+              priority={true}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               fill
               className="object-cover md:object-contain"
             />
