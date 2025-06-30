@@ -404,7 +404,7 @@ export default function UploadForm({
       </div>
       <div
         id="overlay"
-        className="fixed top-0 left-0 w-full h-full bg-[--background-default-blur] z-10"
+        className="hidden fixed top-0 left-0 w-full h-full bg-[--background-default-blur] z-10"
         onClick={() => handleClose(false)}
       ></div>
     </div>
