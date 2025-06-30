@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { fetchCategories } from "@/lib/data";
-// import JoanaBrum from "@/public/joana_brum_brasil.svg";
 import JoanaBrum from "@/public/joana-new.svg";
 import MobileMenu from "./header-mobile";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";

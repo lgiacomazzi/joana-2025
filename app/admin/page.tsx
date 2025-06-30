@@ -15,8 +15,6 @@ export default async function Admin({
 
   console.log("Renderizando Admin com categoria", category);
 
-  // const arts = await mockFetchCategoryArts(selectedCategory || undefined);
-
   return (
     <div className="flex flex-row h-[calc(100vh-3rem)] overscroll-contain">
       <AdminSidebar categories={categories} />
