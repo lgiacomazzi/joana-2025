@@ -3,15 +3,10 @@
 import Image from "next/image";
 import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
-import { CreateArt, UpdateArt } from "@/app/actions";
+import { CreateArt, GetCategories, UpdateArt } from "@/app/actions";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Art } from "@/lib/definitions";
+import { Art, Category } from "@/lib/definitions";
 import Spinner from "@/public/spinner.svg";
-
-const extractGoogleDriveFileId = (url: string): string | null => {
-  const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
-  return match ? match[1] : null;
-};
 
 const defaultFormData = {
   title: "",
@@ -23,6 +18,35 @@ const defaultFormData = {
   is_visible: true, // Default value
   is_available: false, // Default value
   in_carousel: false, // Default value
+};
+
+const extractGoogleDriveFileId = (url: string) => {
+  const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
+  return match ? match[1] : null;
+};
+
+const validateAndTransformImageUrl = (
+  url: string
+): { transformedUrl: string | null; error: string | null } => {
+  const isValidDriveUrl = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/.test(url);
+
+  if (!isValidDriveUrl) {
+    return {
+      transformedUrl: null,
+      error: "Insira um link válido do Google Drive.",
+    };
+  }
+
+  const fileId = extractGoogleDriveFileId(url);
+  if (!fileId) {
+    return {
+      transformedUrl: null,
+      error: "Erro ao extrair o ID do arquivo do link.",
+    };
+  }
+
+  const transformedUrl = `https://drive.google.com/uc?id=${fileId}`;
+  return { transformedUrl, error: null };
 };
 
 export default function UploadForm({
@@ -37,6 +61,19 @@ export default function UploadForm({
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [imageUrlError, setImageUrlError] = useState("");
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const fetchedCategories = await GetCategories();
+      if (Array.isArray(fetchedCategories) && fetchedCategories.length > 0) {
+        setCategories(fetchedCategories);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     // If selectedArt is provided, populate the formData with its values
@@ -65,35 +102,18 @@ export default function UploadForm({
     >
   ) => {
     const { name, value } = e.target;
-    setImagePreviewUrl("");
 
     if (name === "imageUrl") {
-      const isValidDriveUrl = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/.test(value);
-      if (isValidDriveUrl) {
-        // Extract the FILE_ID from the Google Drive link
-        const fileId = extractGoogleDriveFileId(value);
-        if (fileId) {
-          // Set the transformed URL in formData
-          const transformedUrl = `https://drive.google.com/uc?id=${fileId}`;
-          setFormData({
-            ...formData,
-            [name]: transformedUrl,
-          });
-          setImagePreviewUrl(transformedUrl); // Update the preview URL
-          setImageUrlError(""); // Clear any previous error
-          setImageUrlError("");
-        }
-      } else {
-        // If the URL is invalid show an error
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
-        setImagePreviewUrl("");
-        setImageUrlError("Insira um link válido do Google Drive.");
-      }
+      const { transformedUrl, error } = validateAndTransformImageUrl(value);
+
+      setImagePreviewUrl(transformedUrl || "");
+      setImageUrlError(error || "");
+
+      setFormData({
+        ...formData,
+        [name]: transformedUrl || value,
+      });
     } else {
-      // For other fields, update formData normally
       setFormData({
         ...formData,
         [name]: value,
@@ -175,17 +195,16 @@ export default function UploadForm({
       try {
         const response = await UpdateArt(selectedArt.id, art);
         if (response.success) {
-          console.log("Art created successfully!");
+          console.log("Art saved successfully!");
           handleCleanForm();
+          handleClose(false);
         } else {
-          console.error("Failed to create art:", response.error);
+          console.error("Failed to save art:", response.error);
         }
       } catch (error) {
-        console.error("Error while creating art:", error);
+        console.error("Error while saving art:", error);
       } finally {
-        // Set loading state to false
         setIsLoading(false);
-        handleClose(false);
       }
     }
   };
@@ -199,6 +218,12 @@ export default function UploadForm({
     }
   };
 
+  // handle fechar e limpar o conteúdo
+  const handleCloseForm = () => {
+    handleCleanForm();
+    handleClose(false);
+  };
+
   return (
     <div className="fixed top-0 left-0 flex w-full h-full z-30 py-[--header-height] overflow-y-scroll">
       <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg md:w-[600px] z-30">
@@ -206,7 +231,7 @@ export default function UploadForm({
           <h1 className="text-[--foreground-primary] font-bold text-xl">
             {selectedArt ? "Editar Arte" : "Nova Arte"}
           </h1>
-          <button onClick={() => handleClose(false)}>
+          <button onClick={handleCloseForm}>
             <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
@@ -314,11 +339,12 @@ export default function UploadForm({
               onChange={handleChange}
               required
             >
-              <option value="painting">Pinturas</option>
-              <option value="drawing">Desenhos</option>
-              <option value="digital">Arte Digital</option>
-              <option value="illustration">Ilustrações</option>
-              <option value="collage">Colagens</option>
+              {categories &&
+                categories.map(({ name }) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -408,7 +434,7 @@ export default function UploadForm({
       <div
         id="overlay"
         className="hidden fixed top-0 left-0 w-full h-full bg-[--background-default-blur] z-10"
-        onClick={() => handleClose(false)}
+        onClick={handleCloseForm}
       ></div>
     </div>
   );

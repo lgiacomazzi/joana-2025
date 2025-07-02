@@ -1,6 +1,15 @@
 "use client";
 
 import { Art } from "@/lib/definitions";
+
+import { ComponentProps, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { categoryTranslations, getPageName } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
+import UploadForm from "./upload-form";
+
 import {
   StarIcon,
   CurrencyDollarIcon,
@@ -15,10 +24,6 @@ import {
   CurrencyDollarIcon as CurrencyDollarIconSolid,
 } from "@heroicons/react/24/solid";
 
-import { ComponentProps, useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
-import Image from "next/image";
-import Link from "next/link";
 import {
   DeleteArt,
   GetArts,
@@ -26,9 +31,6 @@ import {
   SetArtInCarousel,
   SetArtVisibility,
 } from "@/app/actions";
-import { useSearchParams } from "next/navigation";
-import { categoryTranslations } from "@/lib/utils";
-import UploadForm from "./upload-form";
 
 export const TableHead = ({ children, className }: ComponentProps<"th">) => {
   return (
@@ -58,7 +60,6 @@ export const TableCell = ({ children, className }: ComponentProps<"td">) => {
 
 export const AdminTable = () => {
   const searchParams = useSearchParams();
-  const category = searchParams.get("category");
 
   const [arts, setArts] = useState<Art[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,8 +68,13 @@ export const AdminTable = () => {
   const [selectedArt, setSelectedArt] = useState<Art>();
 
   const refetchArts = async () => {
-    const fetchedArts = await GetArts(category || undefined);
-    console.log("Refetched arts:", fetchedArts);
+    const fetchedArts = await GetArts({
+      search: searchParams.get("search") || undefined,
+      category: searchParams.get("category") || undefined,
+      year: searchParams.get("year") || undefined,
+      is_available: searchParams.has("is_available"),
+      in_carousel: searchParams.has("in_carousel"),
+    });
 
     if (Array.isArray(fetchedArts) && fetchedArts.length > 0) {
       setArts(fetchedArts);
@@ -83,7 +89,7 @@ export const AdminTable = () => {
     setLoading(true);
     refetchArts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!isUploadFormOpen) {
@@ -133,7 +139,10 @@ export const AdminTable = () => {
       {isUploadFormOpen && (
         <UploadForm
           selectedArt={selectedArt}
-          handleClose={setIsUploadFormOpen}
+          handleClose={() => {
+            setIsUploadFormOpen(false);
+            setSelectedArt(undefined);
+          }}
         />
       )}
 
@@ -141,7 +150,7 @@ export const AdminTable = () => {
       <div className="px-4 pt-4">
         <div className="flex justify-between gap-2">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
-            {category ? categoryTranslations[category] : "Todas as Artes"}
+            {categoryTranslations[getPageName(searchParams.toString())]}
           </h1>
           <button
             onClick={() => setIsUploadFormOpen(true)}
