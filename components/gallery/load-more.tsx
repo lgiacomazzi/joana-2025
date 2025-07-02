@@ -12,13 +12,17 @@ let page = 1;
 export default function LoadMore() {
   const { ref, inView } = useInView();
   const [data, setData] = useState<Art[]>([]);
+  const [loadMore, setLoadMore] = useState(true);
 
   useEffect(() => {
     if (inView) {
       console.log("# Loading more...");
       GetPaginatedArts(page).then((data) => {
-        if (Array.isArray(data)) {
+        console.log(data);
+        if (Array.isArray(data) && data.length > 0) {
           setData((prev) => [...prev, ...data]);
+        } else {
+          setLoadMore(false);
         }
       });
       page++;
@@ -29,12 +33,14 @@ export default function LoadMore() {
     <>
       <Galery arts={data} />
 
-      <div
-        ref={ref}
-        className="w-full flex justify-center flex-col items-center"
-      >
-        <Spinner className="text-[--foreground-secondary]" />
-      </div>
+      {loadMore && (
+        <div
+          ref={ref}
+          className="w-full flex justify-center flex-col items-center"
+        >
+          <Spinner className="text-[--foreground-secondary]" />
+        </div>
+      )}
     </>
   );
 }

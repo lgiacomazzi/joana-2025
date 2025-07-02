@@ -3,15 +3,10 @@
 import Image from "next/image";
 import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
-import { CreateArt, UpdateArt } from "@/app/actions";
+import { CreateArt, GetCategories, UpdateArt } from "@/app/actions";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Art } from "@/lib/definitions";
+import { Art, Category } from "@/lib/definitions";
 import Spinner from "@/public/spinner.svg";
-
-const extractGoogleDriveFileId = (url: string): string | null => {
-  const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
-  return match ? match[1] : null;
-};
 
 const defaultFormData = {
   title: "",
@@ -23,6 +18,35 @@ const defaultFormData = {
   is_visible: true, // Default value
   is_available: false, // Default value
   in_carousel: false, // Default value
+};
+
+const extractGoogleDriveFileId = (url: string) => {
+  const match = url.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
+  return match ? match[1] : null;
+};
+
+const validateAndTransformImageUrl = (
+  url: string
+): { transformedUrl: string | null; error: string | null } => {
+  const isValidDriveUrl = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/.test(url);
+
+  if (!isValidDriveUrl) {
+    return {
+      transformedUrl: null,
+      error: "Insira um link válido do Google Drive.",
+    };
+  }
+
+  const fileId = extractGoogleDriveFileId(url);
+  if (!fileId) {
+    return {
+      transformedUrl: null,
+      error: "Erro ao extrair o ID do arquivo do link.",
+    };
+  }
+
+  const transformedUrl = `https://drive.google.com/uc?id=${fileId}`;
+  return { transformedUrl, error: null };
 };
 
 export default function UploadForm({
@@ -37,6 +61,19 @@ export default function UploadForm({
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [imageUrlError, setImageUrlError] = useState("");
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const fetchedCategories = await GetCategories();
+      if (Array.isArray(fetchedCategories) && fetchedCategories.length > 0) {
+        setCategories(fetchedCategories);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     // If selectedArt is provided, populate the formData with its values
@@ -65,35 +102,18 @@ export default function UploadForm({
     >
   ) => {
     const { name, value } = e.target;
-    setImagePreviewUrl("");
 
     if (name === "imageUrl") {
-      const isValidDriveUrl = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/.test(value);
-      if (isValidDriveUrl) {
-        // Extract the FILE_ID from the Google Drive link
-        const fileId = extractGoogleDriveFileId(value);
-        if (fileId) {
-          // Set the transformed URL in formData
-          const transformedUrl = `https://drive.google.com/uc?id=${fileId}`;
-          setFormData({
-            ...formData,
-            [name]: transformedUrl,
-          });
-          setImagePreviewUrl(transformedUrl); // Update the preview URL
-          setImageUrlError(""); // Clear any previous error
-          setImageUrlError("");
-        }
-      } else {
-        // If the URL is invalid show an error
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
-        setImagePreviewUrl("");
-        setImageUrlError("Insira um link válido do Google Drive.");
-      }
+      const { transformedUrl, error } = validateAndTransformImageUrl(value);
+
+      setImagePreviewUrl(transformedUrl || "");
+      setImageUrlError(error || "");
+
+      setFormData({
+        ...formData,
+        [name]: transformedUrl || value,
+      });
     } else {
-      // For other fields, update formData normally
       setFormData({
         ...formData,
         [name]: value,
@@ -314,11 +334,12 @@ export default function UploadForm({
               onChange={handleChange}
               required
             >
-              <option value="painting">Pinturas</option>
-              <option value="drawing">Desenhos</option>
-              <option value="digital">Arte Digital</option>
-              <option value="illustration">Ilustrações</option>
-              <option value="collage">Colagens</option>
+              {categories &&
+                categories.map(({ name }) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))}
             </select>
           </div>
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { Art } from "@/lib/definitions";
 import {
   setArtVisibilityById,
   setArtInCarouselById,
@@ -10,16 +11,44 @@ import {
   deleteArtById,
   fetchArtsBySearch,
   updateArtById,
+  fetchCategories,
 } from "@/lib/data";
-import { Art } from "@/lib/definitions";
 
-export async function GetArts(category?: string) {
+export async function GetArts({
+  search,
+  category,
+  year,
+  is_available,
+  in_carousel,
+}: {
+  search?: string;
+  category?: string;
+  year?: string;
+  is_available?: boolean;
+  in_carousel?: boolean;
+}) {
   try {
-    const data = await fetchBugs(undefined, category, undefined);
+    const data = await fetchBugs({
+      search,
+      category,
+      year,
+      is_available,
+      in_carousel,
+    });
     return data;
   } catch (error) {
     console.error("Erro buscando artes.", error);
     return { success: false, error: "Erro buscando artes" };
+  }
+}
+
+export async function GetCategories() {
+  try {
+    const data = await fetchCategories();
+    return data;
+  } catch (error) {
+    console.error("Erro buscando categorias.", error);
+    return { success: false, error: "Erro buscando categorias" };
   }
 }
 

@@ -30,6 +30,18 @@ import { useSearchParams } from "next/navigation";
 import { categoryTranslations } from "@/lib/utils";
 import UploadForm from "./upload-form";
 
+const getPageName = (searchParams: string): string => {
+  const params = new URLSearchParams(searchParams);
+
+  // Check for specific parameters in order of priority
+  if (params.has("category")) return params.get("category") || "all";
+  if (params.has("is_available")) return "is_available";
+  if (params.has("in_carousel")) return "in_carousel";
+
+  // Default value
+  return "all";
+};
+
 export const TableHead = ({ children, className }: ComponentProps<"th">) => {
   return (
     <th
@@ -58,7 +70,6 @@ export const TableCell = ({ children, className }: ComponentProps<"td">) => {
 
 export const AdminTable = () => {
   const searchParams = useSearchParams();
-  const category = searchParams.get("category");
 
   const [arts, setArts] = useState<Art[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,8 +78,13 @@ export const AdminTable = () => {
   const [selectedArt, setSelectedArt] = useState<Art>();
 
   const refetchArts = async () => {
-    const fetchedArts = await GetArts(category || undefined);
-    console.log("Refetched arts:", fetchedArts);
+    const fetchedArts = await GetArts({
+      search: searchParams.get("search") || undefined,
+      category: searchParams.get("category") || undefined,
+      year: searchParams.get("year") || undefined,
+      is_available: searchParams.has("is_available"),
+      in_carousel: searchParams.has("in_carousel"),
+    });
 
     if (Array.isArray(fetchedArts) && fetchedArts.length > 0) {
       setArts(fetchedArts);
@@ -83,7 +99,7 @@ export const AdminTable = () => {
     setLoading(true);
     refetchArts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!isUploadFormOpen) {
@@ -141,7 +157,8 @@ export const AdminTable = () => {
       <div className="px-4 pt-4">
         <div className="flex justify-between gap-2">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
-            {category ? categoryTranslations[category] : "Todas as Artes"}
+            {/* {category ? categoryTranslations[category] : "Todas as Artes"} */}
+            {categoryTranslations[getPageName(searchParams.toString())]}
           </h1>
           <button
             onClick={() => setIsUploadFormOpen(true)}

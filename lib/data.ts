@@ -41,14 +41,29 @@ export async function fetchPaginatedArts(page = 1, pageSize = 10) {
   }
 }
 
-export async function fetchBugs(
-  search?: string,
-  category?: string,
-  year?: string
-) {
+export async function fetchBugs({
+  search,
+  category,
+  year,
+  is_available,
+  in_carousel,
+}: {
+  search?: string;
+  category?: string;
+  year?: string;
+  is_available?: boolean;
+  in_carousel?: boolean;
+}) {
   const whereClauses: string[] = [];
   const values: string[] = [];
-  console.log("fetchBugs with ", search, category, year);
+  console.log(
+    "fetchBugs with ",
+    search,
+    category,
+    year,
+    is_available,
+    in_carousel
+  );
 
   if (search) {
     values.push(`%${search}%`);
@@ -63,6 +78,16 @@ export async function fetchBugs(
   if (year) {
     values.push(year);
     whereClauses.push(`year = $${values.length}`);
+  }
+
+  if (is_available) {
+    values.push("TRUE");
+    whereClauses.push(`is_available = $${values.length}`);
+  }
+
+  if (in_carousel) {
+    values.push("TRUE");
+    whereClauses.push(`in_carousel = $${values.length}`);
   }
 
   const whereSQL =

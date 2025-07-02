@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const categoryTranslations: { [key: string]: string } = {
+  all: "Todas as Artes",
+  is_available: "Disponíveis",
+  in_carousel: "Carousel",
   painting: "Pinturas",
   drawing: "Desenhos",
   digital: "Arte Digital",

@@ -12,7 +12,7 @@ export default async function Home() {
   const availableArts = await fetchAvailableArts();
 
   return (
-    <div className="flex flex-col gap-10 pb-4">
+    <div className="flex flex-col gap-10 pb-10">
       {/* Carousel de entrada */}
       <Carousel arts={homeArts} />
 
