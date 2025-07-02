@@ -1,6 +1,15 @@
 "use client";
 
 import { Art } from "@/lib/definitions";
+
+import { ComponentProps, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { categoryTranslations, getPageName } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
+import UploadForm from "./upload-form";
+
 import {
   StarIcon,
   CurrencyDollarIcon,
@@ -15,10 +24,6 @@ import {
   CurrencyDollarIcon as CurrencyDollarIconSolid,
 } from "@heroicons/react/24/solid";
 
-import { ComponentProps, useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
-import Image from "next/image";
-import Link from "next/link";
 import {
   DeleteArt,
   GetArts,
@@ -26,21 +31,6 @@ import {
   SetArtInCarousel,
   SetArtVisibility,
 } from "@/app/actions";
-import { useSearchParams } from "next/navigation";
-import { categoryTranslations } from "@/lib/utils";
-import UploadForm from "./upload-form";
-
-const getPageName = (searchParams: string): string => {
-  const params = new URLSearchParams(searchParams);
-
-  // Check for specific parameters in order of priority
-  if (params.has("category")) return params.get("category") || "all";
-  if (params.has("is_available")) return "is_available";
-  if (params.has("in_carousel")) return "in_carousel";
-
-  // Default value
-  return "all";
-};
 
 export const TableHead = ({ children, className }: ComponentProps<"th">) => {
   return (
@@ -149,7 +139,10 @@ export const AdminTable = () => {
       {isUploadFormOpen && (
         <UploadForm
           selectedArt={selectedArt}
-          handleClose={setIsUploadFormOpen}
+          handleClose={() => {
+            setIsUploadFormOpen(false);
+            setSelectedArt(undefined);
+          }}
         />
       )}
 
@@ -157,7 +150,6 @@ export const AdminTable = () => {
       <div className="px-4 pt-4">
         <div className="flex justify-between gap-2">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
-            {/* {category ? categoryTranslations[category] : "Todas as Artes"} */}
             {categoryTranslations[getPageName(searchParams.toString())]}
           </h1>
           <button

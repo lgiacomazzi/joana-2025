@@ -17,3 +17,15 @@ export const categoryTranslations: { [key: string]: string } = {
   foto: "Fotografias",
   clothes: "Vestuário",
 };
+
+export const getPageName = (searchParams: string): string => {
+  const params = new URLSearchParams(searchParams);
+
+  // Check for specific parameters in order of priority
+  if (params.has("category")) return params.get("category") || "all";
+  if (params.has("is_available")) return "is_available";
+  if (params.has("in_carousel")) return "in_carousel";
+
+  // Default value
+  return "all";
+};

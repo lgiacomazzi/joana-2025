@@ -195,17 +195,16 @@ export default function UploadForm({
       try {
         const response = await UpdateArt(selectedArt.id, art);
         if (response.success) {
-          console.log("Art created successfully!");
+          console.log("Art saved successfully!");
           handleCleanForm();
+          handleClose(false);
         } else {
-          console.error("Failed to create art:", response.error);
+          console.error("Failed to save art:", response.error);
         }
       } catch (error) {
-        console.error("Error while creating art:", error);
+        console.error("Error while saving art:", error);
       } finally {
-        // Set loading state to false
         setIsLoading(false);
-        handleClose(false);
       }
     }
   };
@@ -219,6 +218,12 @@ export default function UploadForm({
     }
   };
 
+  // handle fechar e limpar o conteúdo
+  const handleCloseForm = () => {
+    handleCleanForm();
+    handleClose(false);
+  };
+
   return (
     <div className="fixed top-0 left-0 flex w-full h-full z-30 py-[--header-height] overflow-y-scroll">
       <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg md:w-[600px] z-30">
@@ -226,7 +231,7 @@ export default function UploadForm({
           <h1 className="text-[--foreground-primary] font-bold text-xl">
             {selectedArt ? "Editar Arte" : "Nova Arte"}
           </h1>
-          <button onClick={() => handleClose(false)}>
+          <button onClick={handleCloseForm}>
             <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
@@ -429,7 +434,7 @@ export default function UploadForm({
       <div
         id="overlay"
         className="hidden fixed top-0 left-0 w-full h-full bg-[--background-default-blur] z-10"
-        onClick={() => handleClose(false)}
+        onClick={handleCloseForm}
       ></div>
     </div>
   );
