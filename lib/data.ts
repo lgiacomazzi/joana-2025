@@ -28,7 +28,7 @@ export async function fetchPaginatedArts(page = 1, pageSize = 10) {
       SELECT *
       FROM arts
       WHERE is_visible = TRUE
-      ORDER by createdAt DESC, id DESC
+      ORDER by year DESC, createdAt DESC
       LIMIT ${pageSize}
       OFFSET ${offset}
     `;
@@ -173,7 +173,7 @@ export async function fetchCategoryArts(category: string) {
       SELECT *
       FROM arts
       WHERE category LIKE ${category} AND is_visible = TRUE
-      ORDER BY createdAt DESC
+      ORDER BY year DESC, createdAt DESC
     `;
 
     const arts = data.rows;

@@ -226,7 +226,7 @@ export default function UploadForm({
 
   return (
     <div className="fixed top-0 left-0 flex w-full h-full z-30 py-[--header-height] overflow-y-scroll">
-      <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg md:w-[600px] z-30">
+      <div className="flex flex-col m-auto justify-center p-4 gap-4 bg-[--background-default] border border-[--border-color-default] rounded-lg w-[600px] z-30">
         <div className="flex flex-row justify-between items-center">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
             {selectedArt ? "Editar Arte" : "Nova Arte"}

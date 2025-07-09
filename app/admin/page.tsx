@@ -12,7 +12,7 @@ import { Suspense } from "react";
 
 export default async function Admin() {
   return (
-    <div className="flex flex-row h-[calc(100vh-3rem)] overscroll-contain">
+    <div className="flex flex-col md:flex-row md:h-[calc(100vh-3rem)] md:overscroll-contain">
       <Suspense>
         <AdminSidebar />
         <AdminTable />

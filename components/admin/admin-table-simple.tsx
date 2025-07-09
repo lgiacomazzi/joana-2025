@@ -49,7 +49,7 @@ export const TableCell = ({ children, className }: ComponentProps<"td">) => {
   return (
     <td
       className={twMerge(
-        "p-4 text-[--foreground-secondary] max-w-[250px]",
+        "px-4 py-2 md:py-4 text-[--foreground-secondary] w-1/5 max-w-[20%]",
         className
       )}
     >
@@ -98,7 +98,7 @@ export const AdminTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUploadFormOpen]);
 
-  const handleAction = async (action: string, id: string) => {
+  const handleAction = async (action: string, id: string, title?: string) => {
     switch (action) {
       case "edit":
         await setSelectedArt(arts.find((art) => art.id === id));
@@ -123,7 +123,7 @@ export const AdminTable = () => {
         await SetArtForSale(id, false);
         break;
       case "delete":
-        if (confirm("Tem certeza que deseja deletar esta arte?")) {
+        if (confirm(`Tem certeza que deseja deletar '` + title + `'?`)) {
           await DeleteArt(id);
           alert("Arte deletada com sucesso.");
         }
@@ -146,8 +146,8 @@ export const AdminTable = () => {
         />
       )}
 
-      {/* Admin Header */}
-      <div className="px-4 pt-4">
+      <div className="p-4">
+        {/* Admin Header */}
         <div className="flex justify-between gap-2">
           <h1 className="text-[--foreground-primary] font-bold text-xl">
             {categoryTranslations[getPageName(searchParams.toString())]}
@@ -168,19 +168,16 @@ export const AdminTable = () => {
             ? `1 arte`
             : `${arts.length} artes`}
         </p>
-      </div>
-
-      {/* Results table */}
-      <div className="border rounded-md border-[--border-color-default] m-4">
-        <table className="min-w-full text-xs table-auto">
-          <thead>
-            <tr>
+        {/* Results table */}
+        <table className="mt-4 w-full text-xs table-fixed border rounded-md border-[--border-color-default]">
+          <thead className="hidden">
+            {/* <tr>
               <TableHead>Arte</TableHead>
               <TableHead className="text-left">Descrição</TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead>Ano</TableHead>
               <TableHead className="w-4"></TableHead>
-            </tr>
+            </tr> */}
           </thead>
           <tbody>
             {loading ? (
@@ -194,14 +191,14 @@ export const AdminTable = () => {
                 <tr
                   key={art.id}
                   className={twMerge(
-                    "h-16 border-b border-[--border-color-default] last:border-none",
+                    "h-10 md:h-16 border-b border-[--border-color-default] last:border-none",
                     !art.is_visible && "opacity-30"
                   )}
                 >
                   {/* Image and Title*/}
                   <TableCell>
-                    <div className="flex flex-1 gap-4 overflow-hidden">
-                      <div className="relative w-8 h-8 flex flex-shrink-0 rounded-md border bg-[--background-disabled] border-[--border-color-default] items-center justify-center overflow-hidden">
+                    <div className="flex flex-1 gap-2 md:gap-4 overflow-hidden items-center">
+                      <div className="relative h-6 w-6 md:w-8 md:h-8 flex flex-shrink-0 rounded-md border bg-[--background-disabled] border-[--border-color-default] items-center justify-center overflow-hidden">
                         {art.is_visible ? (
                           <Image
                             className="w-full h-full object-cover object-center overflow-hidden"
@@ -223,7 +220,7 @@ export const AdminTable = () => {
                           {art.title || <span className="text-red-500">!</span>}
                         </Link>
                         <span
-                          className="text-[--foreground-tertiary] truncate"
+                          className="hidden md:block text-[--foreground-tertiary] truncate"
                           title={art.id}
                         >
                           {art.id}
@@ -233,7 +230,7 @@ export const AdminTable = () => {
                   </TableCell>
 
                   {/* Description and Dimensions */}
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     <p className="text-[--foreground-tertiary] truncate">
                       {art.description}
                     </p>
@@ -243,14 +240,18 @@ export const AdminTable = () => {
                   </TableCell>
 
                   {/* Category */}
-                  <TableCell>{art.category}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {art.category}
+                  </TableCell>
 
                   {/* Year */}
-                  <TableCell>{art.year}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {art.year}
+                  </TableCell>
 
                   {/* Action Buttons */}
                   <TableCell>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row justify-end">
                       {/* Botão para editar */}
                       <button
                         className="p-2"
@@ -320,7 +321,9 @@ export const AdminTable = () => {
                       <button
                         className="p-2 hover:scale-90 active:scale-90 transition-all"
                         title="Deletar"
-                        onClick={() => handleAction("delete", art.id)}
+                        onClick={() =>
+                          handleAction("delete", art.id, art.title)
+                        }
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>

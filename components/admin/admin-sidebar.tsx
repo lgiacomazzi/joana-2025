@@ -116,7 +116,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <div className="bg-[--background-disabled] border-r border-[--border-color-default] w-60 h-full flex flex-col items-center gap-4 flex-shrink-0 py-4 overflow-y-auto">
+    <div className="bg-[--background-disabled] border-r border-[--border-color-default] w-full md:w-60 h-fit md:h-full flex flex-col items-center gap-4 flex-shrink-0 py-4 overflow-y-auto">
       {isLoading ? (
         <Spinner />
       ) : (
@@ -129,6 +129,10 @@ export default function AdminSidebar() {
               onClick={() => handleClick(item)}
             />
           ))}
+          {/* <li className="flex items-center gap-2 text-xs font-bold p-2 rounded-lg cursor-pointer w-full text-[--foreground-tertiary]">
+            <PlusIcon className="w-4" />
+            Adicionar categoria
+          </li> */}
         </ul>
       )}
     </div>
