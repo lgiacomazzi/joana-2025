@@ -48,6 +48,7 @@ export default function LoadMore() {
       // });
       // page++;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
   return (
